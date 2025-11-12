@@ -1,21 +1,19 @@
 import { left, right, type Either } from '@/core/either';
-import { Events } from '@/domain/enterprise/entities/events';
-import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
-import { TitleAlreadyExistError } from '@/core/errors/title-already-exist-error';
-import type { EventsRepository } from '../../repositories/event-repository';
+import type { EventRepository } from '../../repositories/event-repository';
 import { EventAreNotExitsError } from '@/core/errors/event-are-not-exist-error';
+import { Event } from '@/domain/enterprise/entities/events';
 
-type GetEventsUseCaseResponse = Either<
+type GetEventUseCaseResponse = Either<
   EventAreNotExitsError,
-  { events: Events[] }
+  { event: Event[] }
 >;
-export class GetEventsUseCase {
-  constructor(public eventsRepository: EventsRepository) {}
-  async execute(): Promise<GetEventsUseCaseResponse> {
-    const events = await this.eventsRepository.findByAll();
-    if (!events) {
+export class GetEventUseCase {
+  constructor(public eventRepository: EventRepository) {}
+  async execute(): Promise<GetEventUseCaseResponse> {
+    const event = await this.eventRepository.findByAll();
+    if (!event) {
       return left(new EventAreNotExitsError());
     }
-    return right({ events });
+    return right({ event });
   }
 }

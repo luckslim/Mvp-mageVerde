@@ -1,5 +1,5 @@
-import type { QuestionRepository } from "@/domain/aplication/repositories/question-repository";
-import type { Question } from "@/domain/enterprise/entities/questions";
+import type { QuestionRepository } from '@/domain/aplication/repositories/question-repository';
+import type { Question } from '@/domain/enterprise/entities/questions';
 
 export class InMemoryQuestionRepository implements QuestionRepository {
   public items: Question[] = [];
@@ -14,12 +14,12 @@ export class InMemoryQuestionRepository implements QuestionRepository {
     return question;
   }
   async save(question: Question): Promise<Question | null> {
-    const itemIndex = this.items.findIndex((item)=> item.id === question.id)
-    this.items[itemIndex]=question
-    return question
+    const itemIndex = this.items.findIndex((item) => item.id === question.id);
+    this.items[itemIndex] = question;
+    return question;
   }
   async delete(id: string): Promise<void> {
-    const itemIndex = this.items.findIndex((item)=>item.id.toString() !== id)
-    this.items.splice(itemIndex, 1)
+    const itemIndex = this.items.findIndex((item) => item.id.toString() !== id);
+    this.items.splice(itemIndex, 1);
   }
 }

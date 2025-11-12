@@ -1,14 +1,13 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
-import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
+import { InMemoryEventRepository } from 'test/repository/in-memory-events-repository';
 import { EditEventUseCase } from './edit-events-use-case';
-import { InMemoryEventsRepository } from '../../../../../test/repository/in-memory-events-repository';
-import { makeEvent } from '../../../../../test/factory/make-events-factory';
+import { makeEvent } from 'test/factory/make-events-factory';
 
-let inMemoryEventRepository: InMemoryEventsRepository;
+let inMemoryEventRepository: InMemoryEventRepository;
 let sut: EditEventUseCase;
 describe('adit event', () => {
   beforeEach(() => {
-    inMemoryEventRepository = new InMemoryEventsRepository();
+    inMemoryEventRepository = new InMemoryEventRepository();
     sut = new EditEventUseCase(inMemoryEventRepository);
   });
   it('should be able edit event', async () => {

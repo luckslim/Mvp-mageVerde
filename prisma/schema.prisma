@@ -33,7 +33,9 @@ model Event {
   authorId   String
   title      String
   content    String
-
+  colaborators String
+  time String
+  
   authorRelation Author    @relation("AuthorEvents", fields: [authorId], references: [id], onDelete: Cascade)
   questions       Question[]
 

@@ -1,47 +1,44 @@
-import { FakeHasher } from '../../../../../test/cryptography/fake-hasher';
-import { makeEvent } from '../../../../../test/factory/make-events-factory';
-import { InMemoryEventsRepository } from '../../../../../test/repository/in-memory-events-repository';
-import { CreateEventsUseCase } from './create-events-use-case';
 import { TitleAlreadyExistError } from '@/core/errors/title-already-exist-error';
+import { CreateEventUseCase } from './create-events-use-case';
+import { InMemoryEventRepository } from 'test/repository/in-memory-events-repository';
+import { makeEvent } from 'test/factory/make-events-factory';
 
-let inMemoryEventsRepository: InMemoryEventsRepository;
-let fakeHasher: FakeHasher;
-let sut: CreateEventsUseCase;
-describe('Create events', () => {
+let inMemoryEventRepository: InMemoryEventRepository;
+let sut: CreateEventUseCase;
+describe('Create event', () => {
   beforeEach(() => {
-    inMemoryEventsRepository = new InMemoryEventsRepository();
-    fakeHasher = new FakeHasher();
-    sut = new CreateEventsUseCase(inMemoryEventsRepository);
+    inMemoryEventRepository = new InMemoryEventRepository();
+    sut = new CreateEventUseCase(inMemoryEventRepository);
   });
-  it('should be able create events', async () => {
-    const events = makeEvent();
+  it('should be able create event', async () => {
+    const event = makeEvent();
     const result = await sut.execute({
-      authorId: events.authorId,
-      title: events.title,
-      content: events.content,
-      time: events.time,
-      colaborators: events.colaborators,
+      authorId: event.authorId,
+      title: event.title,
+      content: event.content,
+      time: event.time,
+      colaborators: event.colaborators,
     });
     expect(result.isRight()).toBe(true);
     expect(result.value).toMatchObject({
-      events: {
-        authorId: events.authorId,
-        title: events.title,
-        content: events.content,
-        time: events.time,
-        colaborators: events.colaborators,
+      event: {
+        authorId: event.authorId,
+        title: event.title,
+        content: event.content,
+        time: event.time,
+        colaborators: event.colaborators,
       },
     });
   });
-  it('should be able create events', async () => {
-    const events = makeEvent();
-    inMemoryEventsRepository.items.push(events);
+  it('should be able create event', async () => {
+    const event = makeEvent();
+    inMemoryEventRepository.items.push(event);
     const result = await sut.execute({
-      authorId: events.authorId,
-      title: events.title,
-      content: events.content,
-      time: events.time,
-      colaborators: events.colaborators,
+      authorId: event.authorId,
+      title: event.title,
+      content: event.content,
+      time: event.time,
+      colaborators: event.colaborators,
     });
     expect(result.isLeft()).toBe(true);
     expect(result.value).instanceOf(TitleAlreadyExistError);

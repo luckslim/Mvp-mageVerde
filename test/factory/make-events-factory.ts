@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
-import { Events, type eventsProps } from '@/domain/enterprise/entities/events';
+import { Event, eventProps } from '@/domain/enterprise/entities/events';
 export function makeEvent(
-  override: Partial<eventsProps> = {},
+  override: Partial<eventProps> = {},
   id?: UniqueEntityID,
 ) {
-  const events = Events.create(
+  const event = Event.create(
     {
       authorId: faker.string.uuid(),
       title: faker.string.sample(),
@@ -16,5 +16,5 @@ export function makeEvent(
     },
     id,
   );
-  return events;
+  return event;
 }

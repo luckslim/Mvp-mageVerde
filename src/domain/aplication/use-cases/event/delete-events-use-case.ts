@@ -1,31 +1,31 @@
 import { left, right, type Either } from '@/core/either';
-import { Events } from '@/domain/enterprise/entities/events';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import type { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
-import type { EventsRepository } from '../../repositories/event-repository';
+import type { EventRepository } from '../../repositories/event-repository';
+import { Event } from '@/domain/enterprise/entities/events';
 
-interface DeleteEventsUseCaseRequest {
+interface DeleteEventUseCaseRequest {
   id: string; //id from event
   userId: string;
 }
-type DeleteEventsUseCaseResponse = Either<
+type DeleteEventUseCaseResponse = Either<
   userAlreadyExistError,
-  { event: Events }
+  { event: Event }
 >;
-export class DeleteEventsUseCase {
-  constructor(public eventsRepository: EventsRepository) {}
+export class DeleteEventUseCase {
+  constructor(public eventRepository: EventRepository) {}
   async execute({
     id,
     userId,
-  }: DeleteEventsUseCaseRequest): Promise<DeleteEventsUseCaseResponse> {
-    const event = await this.eventsRepository.findById(id);
+  }: DeleteEventUseCaseRequest): Promise<DeleteEventUseCaseResponse> {
+    const event = await this.eventRepository.findById(id);
     if (!event) {
       return left(new WrongcredentialError());
     }
     if (event.authorId !== userId) {
       return left(new WrongcredentialError());
     } else {
-      await this.eventsRepository.delete(id);
+      await this.eventRepository.delete(id);
       return right({ event });
     }
   }

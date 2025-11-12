@@ -1,36 +1,36 @@
-import type { EventsRepository } from "@/domain/aplication/repositories/event-repository";
-import type { Events } from "@/domain/enterprise/entities/events";
+import { EventRepository } from '@/domain/aplication/repositories/event-repository';
+import { Event } from '@/domain/enterprise/entities/events';
 
-export class InMemoryEventsRepository implements EventsRepository {
-  public items: Events[] = [];
-  async findById(id: string): Promise<Events | null> {
-    const event =  this.items.find((item)=> item.id.toString() === id)
-    if(!event){
-      return null
+export class InMemoryEventRepository implements EventRepository {
+  public items: Event[] = [];
+  async findById(id: string): Promise<Event | null> {
+    const event = this.items.find((item) => item.id.toString() === id);
+    if (!event) {
+      return null;
     }
-    return event
+    return event;
   }
-  async findByAll(): Promise<Events[] | null> {
-    const event = this.items
-    return event
+  async findByAll(): Promise<Event[] | null> {
+    const event = this.items;
+    return event;
   }
-  async create(events: Events){
-    const event = this.items.push(events)
+  async create(event: Event) {
+    this.items.push(event);
   }
-  async findByTitle(title: string): Promise<Events | null> {
-    const event = this.items.find((item)=> item.title === title)
-    if(!event){
-        return null
+  async findByTitle(title: string): Promise<Event | null> {
+    const event = this.items.find((item) => item.title === title);
+    if (!event) {
+      return null;
     }
-    return event
+    return event;
   }
-  async save(events: Events): Promise<Events | null> {
-    const itemIndex = this.items.findIndex((item)=>item.id === events.id)
-    this.items[itemIndex]=events
-    return events
-}
+  async save(event: Event): Promise<Event | null> {
+    const itemIndex = this.items.findIndex((item) => item.id === event.id);
+    this.items[itemIndex] = event;
+    return event;
+  }
   async delete(id: string): Promise<void> {
-    const itemIndex= this.items.findIndex((item)=>item.id.toString() === id)
-    this.items.splice(itemIndex, 1)
+    const itemIndex = this.items.findIndex((item) => item.id.toString() === id);
+    this.items.splice(itemIndex, 1);
   }
 }

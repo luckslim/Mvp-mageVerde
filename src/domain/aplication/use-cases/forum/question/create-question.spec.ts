@@ -2,17 +2,17 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { EventAreNotExitsError } from '@/core/errors/event-are-not-exist-error';
 import { CreateQuestionUseCase } from './create-question';
 import { InMemoryQuestionRepository } from '../../../../../../test/repository/in-memory-question-repository';
-import { InMemoryEventsRepository } from '../../../../../../test/repository/in-memory-events-repository';
 import { makeQuestion } from '../../../../../../test/factory/make-question-factory';
-import { makeEvent } from '../../../../../../test/factory/make-events-factory';
+import { InMemoryEventRepository } from 'test/repository/in-memory-events-repository';
+import { makeEvent } from 'test/factory/make-events-factory';
 
 let inMemoryQuestionRepository: InMemoryQuestionRepository;
-let inMemoryEventRepository: InMemoryEventsRepository;
+let inMemoryEventRepository: InMemoryEventRepository;
 let sut: CreateQuestionUseCase;
 describe('Create question', () => {
   beforeEach(() => {
     inMemoryQuestionRepository = new InMemoryQuestionRepository();
-    inMemoryEventRepository = new InMemoryEventsRepository();
+    inMemoryEventRepository = new InMemoryEventRepository();
     sut = new CreateQuestionUseCase(
       inMemoryQuestionRepository,
       inMemoryEventRepository,

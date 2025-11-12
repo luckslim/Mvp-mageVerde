@@ -1,8 +1,8 @@
 import { left, right, type Either } from '@/core/either';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
-import type { Events } from '@/domain/enterprise/entities/events';
-import type { EventsRepository } from '../../repositories/event-repository';
+import { EventRepository } from '../../repositories/event-repository';
+import { Event } from '@/domain/enterprise/entities/events';
 
 interface EditEventUseCaseRequest {
   id: string;
@@ -12,9 +12,9 @@ interface EditEventUseCaseRequest {
   time: string;
   colaborators: string;
 }
-type EditEventUseCaseResponse = Either<WrongcredentialError, { event: Events }>;
+type EditEventUseCaseResponse = Either<WrongcredentialError, { event: Event }>;
 export class EditEventUseCase {
-  constructor(public eventRepository: EventsRepository) {}
+  constructor(public eventRepository: EventRepository) {}
   async execute({
     id,
     userId,

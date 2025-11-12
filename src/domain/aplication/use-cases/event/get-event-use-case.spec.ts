@@ -1,21 +1,21 @@
-import { makeEvent } from '../../../../../test/factory/make-events-factory';
-import { InMemoryEventsRepository } from '../../../../../test/repository/in-memory-events-repository';
-import { GetEventsUseCase } from './get-event-use-case';
+import { InMemoryEventRepository } from 'test/repository/in-memory-events-repository';
+import { GetEventUseCase } from './get-event-use-case';
+import { makeEvent } from 'test/factory/make-events-factory';
 
-let inMemoryEventsRepository: InMemoryEventsRepository;
-let sut: GetEventsUseCase;
-describe('Get events', () => {
+let inMemoryEventRepository: InMemoryEventRepository;
+let sut: GetEventUseCase;
+describe('Get event', () => {
   beforeEach(() => {
-    inMemoryEventsRepository = new InMemoryEventsRepository();
-    sut = new GetEventsUseCase(inMemoryEventsRepository);
+    inMemoryEventRepository = new InMemoryEventRepository();
+    sut = new GetEventUseCase(inMemoryEventRepository);
   });
-  it('should be able get events', async () => {
+  it('should be able get event', async () => {
     for (let i = 0; i < 10; i++) {
-      const events = makeEvent();
-      inMemoryEventsRepository.items.push(events);
+      const event = makeEvent();
+      inMemoryEventRepository.items.push(event);
     }
     const result = await sut.execute();
-    expect(inMemoryEventsRepository.items).toHaveLength(10);
+    expect(inMemoryEventRepository.items).toHaveLength(10);
     expect(result.isRight()).toBe(true);
   });
 });

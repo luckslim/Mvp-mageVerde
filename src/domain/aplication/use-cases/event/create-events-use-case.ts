@@ -1,42 +1,47 @@
 import { left, right, type Either } from '@/core/either';
-import { Events } from '@/domain/enterprise/entities/events';
 import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
 import { TitleAlreadyExistError } from '@/core/errors/title-already-exist-error';
-import type { EventsRepository } from '../../repositories/event-repository';
+import { EventRepository } from '../../repositories/event-repository';
+import { Event } from '@/domain/enterprise/entities/events';
+import { Inject, Injectable } from '@nestjs/common';
 
-interface CreateEventsUseCaseRequest {
+interface CreateEventUseCaseRequest {
   authorId: string;
   title: string;
   content: string;
   time: string;
   colaborators: string;
 }
-type CreateEventsUseCaseResponse = Either<
+type CreateEventUseCaseResponse = Either<
   userAlreadyExistError,
-  { events: Events }
+  { event: Event }
 >;
-export class CreateEventsUseCase {
-  constructor(public eventsRepository: EventsRepository) {}
+@Injectable()
+export class CreateEventUseCase {
+  constructor(
+    @Inject(EventRepository) public eventRepository: EventRepository,
+  ) {}
   async execute({
     authorId,
     title,
     content,
     time,
     colaborators,
-  }: CreateEventsUseCaseRequest): Promise<CreateEventsUseCaseResponse> {
-    const eventTitle = await this.eventsRepository.findByTitle(title);
+  }: CreateEventUseCaseRequest): Promise<CreateEventUseCaseResponse> {
+    const eventTitle = await this.eventRepository.findByTitle(title);
+    console.log(authorId);
     if (eventTitle) {
       return left(new TitleAlreadyExistError(eventTitle.title));
     } else {
-      const events = Events.create({
+      const event = Event.create({
         authorId,
         title,
         content,
         time,
         colaborators,
       });
-      await this.eventsRepository.create(events);
-      return right({ events });
+      await this.eventRepository.create(event);
+      return right({ event });
     }
   }
 }

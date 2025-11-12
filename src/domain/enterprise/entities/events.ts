@@ -1,6 +1,6 @@
 import { Entity } from '@/core/entities/entity';
 import type { UniqueEntityID } from '@/core/entities/unique-entity-id';
-export interface eventsProps {
+export interface eventProps {
   authorId: string;
   title: string;
   content: string;
@@ -8,7 +8,7 @@ export interface eventsProps {
   colaborators: string;
   createdAt?: Date;
 }
-export class Events extends Entity<eventsProps> {
+export class Event extends Entity<eventProps> {
   get authorId() {
     return this.props.authorId;
   }
@@ -44,8 +44,8 @@ export class Events extends Entity<eventsProps> {
     this.props.colaborators = colaborators;
   }
 
-  static create(props: eventsProps, id?: UniqueEntityID) {
-    const events = new Events(props, id);
-    return events;
+  static create(props: eventProps, id?: UniqueEntityID) {
+    const event = new Event(props, id);
+    return event;
   }
 }
