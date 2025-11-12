@@ -1,9 +1,10 @@
 import { left, right, type Either } from '@/core/either';
-import type { UserRepository } from '../../repositories/user-repository';
+import { UserRepository } from '../../repositories/user-repository';
 import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
-import type { Encrypter } from '../../cryptography/encrypter';
+import { Encrypter } from '../../cryptography/encrypter';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
-import type { HashComparer } from '../../cryptography/hash-comparer';
+import { HashComparer } from '../../cryptography/hash-comparer';
+import { Inject, Injectable } from '@nestjs/common';
 
 interface AuthenticateUserUseCaseRequest {
   email: string;
@@ -13,11 +14,12 @@ type AuthenticateUserUseCaseResponse = Either<
   userAlreadyExistError | WrongcredentialError,
   { accessToken: string }
 >;
+@Injectable()
 export class AuthenticateUserUseCase {
   constructor(
-    public userRepository: UserRepository,
-    public encrypter: Encrypter,
-    public hashComparer: HashComparer,
+    @Inject(UserRepository) public userRepository: UserRepository,
+    @Inject(Encrypter) public encrypter: Encrypter,
+    @Inject(HashComparer) public hashComparer: HashComparer,
   ) {}
   async execute({
     email,

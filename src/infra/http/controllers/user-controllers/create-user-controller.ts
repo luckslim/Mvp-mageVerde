@@ -28,12 +28,13 @@ export class CreateUserController {
   @HttpCode(201)
   async handle(@Body(bodyValidationPipe) body: CreateUserBodySchema) {
     const { name, email, password } = body;
-    console.log(name, email, password);
+
     const result = await this.createUserUseCase.execute({
       name,
       email,
       password,
     });
+
     if (result.isLeft()) {
       const error = result.value;
       switch (error.constructor) {

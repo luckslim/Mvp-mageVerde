@@ -20,6 +20,7 @@ export class PrismaUserRepository implements UserRepository {
         email,
       },
     });
+
     if (!user) {
       return null;
     }

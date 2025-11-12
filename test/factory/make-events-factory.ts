@@ -1,9 +1,9 @@
-import { faker } from "@faker-js/faker";
-import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { Events, type eventsProps } from "@/domain/enterprise/entities/events";
+import { faker } from '@faker-js/faker';
+import { UniqueEntityID } from '@/core/entities/unique-entity-id';
+import { Events, type eventsProps } from '@/domain/enterprise/entities/events';
 export function makeEvent(
   override: Partial<eventsProps> = {},
-  id?: UniqueEntityID
+  id?: UniqueEntityID,
 ) {
   const events = Events.create(
     {
@@ -11,10 +11,10 @@ export function makeEvent(
       title: faker.string.sample(),
       content: faker.lorem.text(),
       colaborators: faker.word.noun(),
-      time: faker.string.sample(), 
+      time: faker.string.sample(),
       ...override,
     },
-    id
+    id,
   );
   return events;
 }

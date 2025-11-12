@@ -7,8 +7,6 @@ import { PrismaUserRepository } from './prisma/repository/prisma-user-repository
   providers: [
     PrismaService,
     { provide: UserRepository, useClass: PrismaUserRepository },
-    { provide: UserRepository, useClass: PrismaUserRepository },
-    { provide: UserRepository, useClass: PrismaUserRepository },
   ],
   exports: [PrismaService, UserRepository],
 })
