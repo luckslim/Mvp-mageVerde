@@ -1,16 +1,17 @@
 import { left, right, type Either } from '@/core/either';
 import { User } from '@/domain/enterprise/entities/user';
-import type { UserRepository } from '../../repositories/user-repository';
-import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
+import { UserRepository } from '../../repositories/user-repository';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
+import { Inject, Injectable } from '@nestjs/common';
 
 interface DeleteUserUseCaseRequest {
   id: string;
   email: string;
 }
-type DeleteUserUseCaseResponse = Either<userAlreadyExistError, { user: User }>;
+type DeleteUserUseCaseResponse = Either<WrongcredentialError, { user: User }>;
+@Injectable()
 export class DeleteUserUseCase {
-  constructor(public userRepository: UserRepository) {}
+  constructor(@Inject(UserRepository) public userRepository: UserRepository) {}
   async execute({
     id,
     email,

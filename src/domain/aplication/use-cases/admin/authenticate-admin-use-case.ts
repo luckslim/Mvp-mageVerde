@@ -1,9 +1,10 @@
 import { left, right, type Either } from '@/core/either';
 import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
-import type { AdminRepository } from '../../repositories/admin-repository';
-import type { Encrypter } from '../../cryptography/encrypter';
-import type { HashComparer } from '../../cryptography/hash-comparer';
+import { AdminRepository } from '../../repositories/admin-repository';
+import { Encrypter } from '../../cryptography/encrypter';
+import { HashComparer } from '../../cryptography/hash-comparer';
+import { Inject, Injectable } from '@nestjs/common';
 
 interface AuthenticateAdminUseCaseRequest {
   email: string;
@@ -13,11 +14,12 @@ type AuthenticateAdminUseCaseResponse = Either<
   userAlreadyExistError | WrongcredentialError,
   { accessToken: string }
 >;
+@Injectable()
 export class AuthenticateAdminUseCase {
   constructor(
-    public adminRepository: AdminRepository,
-    public encrypter: Encrypter,
-    public hashComparer: HashComparer,
+    @Inject(AdminRepository) public adminRepository: AdminRepository,
+    @Inject(Encrypter) public encrypter: Encrypter,
+    @Inject(HashComparer) public hashComparer: HashComparer,
   ) {}
   async execute({
     email,

@@ -8,27 +8,27 @@ import {
 } from '@nestjs/common';
 import z from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipes';
-import { AuthenticateUserUseCase } from '@/domain/aplication/use-cases/users/authenticate-user-use-case';
+import { AuthenticateAdminUseCase } from '@/domain/aplication/use-cases/admin/authenticate-admin-use-case';
 import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
 
-const authenticateUserBodySchema = z.object({
+const authenticateAdminBodySchema = z.object({
   email: z.email(),
   password: z.string(),
 });
 
-type AuthenticateUserBodySchema = z.infer<typeof authenticateUserBodySchema>;
+type AuthenticateAdminBodySchema = z.infer<typeof authenticateAdminBodySchema>;
 
-const bodyValidationPipe = new ZodValidationPipe(authenticateUserBodySchema);
+const bodyValidationPipe = new ZodValidationPipe(authenticateAdminBodySchema);
 
-@Controller('/authenticate/user')
-export class AuthenticateUserController {
-  constructor(public authenticateUser: AuthenticateUserUseCase) {}
+@Controller('/authenticate/admin')
+export class AuthenticateAdminController {
+  constructor(public authenticateAdmin: AuthenticateAdminUseCase) {}
   @Post()
   @HttpCode(200)
-  async handle(@Body(bodyValidationPipe) body: AuthenticateUserBodySchema) {
+  async handle(@Body(bodyValidationPipe) body: AuthenticateAdminBodySchema) {
     const { email, password } = body;
 
-    const result = await this.authenticateUser.execute({
+    const result = await this.authenticateAdmin.execute({
       email,
       password,
     });

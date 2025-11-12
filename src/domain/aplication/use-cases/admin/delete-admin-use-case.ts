@@ -2,7 +2,8 @@ import { left, right, type Either } from '@/core/either';
 import { Admin } from '@/domain/enterprise/entities/admin';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import type { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
-import type { AdminRepository } from '../../repositories/admin-repository';
+import { AdminRepository } from '../../repositories/admin-repository';
+import { Inject, Injectable } from '@nestjs/common';
 
 interface DeleteAdminUseCaseRequest {
   id: string;
@@ -12,8 +13,11 @@ type DeleteAdminUseCaseResponse = Either<
   userAlreadyExistError,
   { admin: Admin }
 >;
+@Injectable()
 export class DeleteAdminUseCase {
-  constructor(public adminRepository: AdminRepository) {}
+  constructor(
+    @Inject(AdminRepository) public adminRepository: AdminRepository,
+  ) {}
   async execute({
     id,
     email,

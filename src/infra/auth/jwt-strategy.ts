@@ -7,7 +7,7 @@ import { EnvService } from '../env/env.service';
 const tokenPayloadSchema = z.object({
   sub: z.string(),
 });
-type TokenPayloadSchema = z.infer<typeof tokenPayloadSchema>;
+export type TokenPayloadSchema = z.infer<typeof tokenPayloadSchema>;
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
