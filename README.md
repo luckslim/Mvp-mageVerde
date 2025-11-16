@@ -7,7 +7,7 @@
 <h1 align="center">🌳Circuito Magé Verde - Divulgação de Eventos voltados para o turísmo ecológico</h1>
 <p align="center">
   <a href="#" target="blank">
-    <img src="/image/cleanArquitecture.png" width="300" alt="C.A" />
+    <img src="src/image/cleanArquitecture.png" width="300" alt="C.A" />
   </a>
 </p>
 
