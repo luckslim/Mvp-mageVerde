@@ -31,14 +31,20 @@ describe('Create Admin (E2E)', () => {
         email: 'johnDoe@email.com',
         password: '123123',
       });
+    expect(response.statusCode).toBe(201);
 
-    const result = await prisma.admin.findFirst({
+    const admin = await prisma.admin.findFirst({
       where: {
         email: 'johnDoe@email.com',
       },
     });
+    expect(admin.email).toBe('johnDoe@email.com');
 
-    expect(response.statusCode).toBe(201);
-    expect(result.email).toBe('johnDoe@email.com');
+    const author = await prisma.author.findFirst({
+      where: {
+        userId: admin.id,
+      },
+    });
+    expect(author.userId).toBe(admin.id);
   });
 });

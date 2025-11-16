@@ -15,6 +15,7 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import { TokenPayloadSchema } from '@/infra/auth/jwt-strategy';
 import { EventAreNotExitsError } from '@/core/errors/event-are-not-exist-error';
 import { AuthGuard } from '@nestjs/passport';
+import { NotAllowedError } from '@/core/errors/not-allowed-error';
 
 const createEventBodySchema = z.object({
   title: z.string(),
@@ -38,17 +39,21 @@ export class CreateEventController {
     @CurrentUser() admin: TokenPayloadSchema,
   ) {
     const { sub } = admin;
+
     if (!admin) {
-      return new UnauthorizedException();
+      return new UnauthorizedException(NotAllowedError);
     }
+
     const { title, content, colaborators, time } = body;
+
     const result = await this.createEventUseCase.execute({
-      authorId: sub,
-      colaborators,
-      content,
-      time,
+      Id: sub,
       title,
+      content,
+      colaborators,
+      time,
     });
+
     if (result.isLeft()) {
       const error = result.value;
       switch (error.constructor) {

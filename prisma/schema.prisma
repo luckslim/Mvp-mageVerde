@@ -12,7 +12,6 @@ model Admin {
   email    String
   password String
 
-  authors  Author[] @relation("AdminAuthors")
 
   @@map("admin")
 }
@@ -23,23 +22,8 @@ model User {
   email    String
   password String
 
-  authors  Author[] @relation("UserAuthors")
 
   @@map("user")
-}
-
-model Event {
-  id         String   @id @default(uuid())
-  authorId   String
-  title      String
-  content    String
-  colaborators String
-  time String
-  
-  authorRelation Author    @relation("AuthorEvents", fields: [authorId], references: [id], onDelete: Cascade)
-  questions       Question[]
-
-  @@map("event")
 }
 
 enum AuthorType {
@@ -49,13 +33,10 @@ enum AuthorType {
 
 model Author {
   id       String       @id @default(uuid())
+  
   type     AuthorType   @default(USER)
 
-  adminId  String?
-  userId   String?
-
-  admin    Admin?  @relation("AdminAuthors", fields: [adminId], references: [id], onDelete: Cascade)
-  user     User?   @relation("UserAuthors", fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 
   questions Question[]
   answers   Answer[]
@@ -64,14 +45,28 @@ model Author {
   @@map("author")
 }
 
+model Event {
+  id         String   @id @default(uuid())
+  authorId   String? 
+  title      String
+  content    String
+  colaborators String
+  time String
+  
+  authorRelation Author?   @relation("AuthorEvents", fields: [authorId], references: [userId], onDelete: Cascade)
+  questions       Question[]
+
+  @@map("event")
+}
+
 model Question {
   id        String   @id @default(uuid())
   content   String
-  authorId  String
-  eventId   String
+  authorId  String?
+  eventId   String?
 
-  authorRelation Author  @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  eventRelation  Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  authorRelation Author?  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  eventRelation  Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
   answers        Answer[]
 
   @@map("question")
@@ -79,12 +74,12 @@ model Question {
 
 model Answer {
   id         String   @id @default(uuid())
-  authorId   String
+  authorId   String?
   content    String
-  questionId String
+  questionId String?
 
-  authorRelation   Author   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  questionRelation Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  authorRelation   Author?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  questionRelation Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@map("answer")
 }

@@ -1,32 +1,50 @@
 import { left, right, type Either } from '@/core/either';
-import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
-import type { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
-import type { EventRepository } from '../../repositories/event-repository';
+import { EventRepository } from '../../repositories/event-repository';
 import { Event } from '@/domain/enterprise/entities/events';
+import { Inject, Injectable } from '@nestjs/common';
+import { AuthorRepository } from '../../repositories/author-repository';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { NotAllowedError } from '@/core/errors/not-allowed-error';
 
 interface DeleteEventUseCaseRequest {
-  id: string; //id from event
-  userId: string;
+  eventId: string; //id from event
+  Id: string; //id from user, got from jwt
 }
 type DeleteEventUseCaseResponse = Either<
-  userAlreadyExistError,
+  ResourceNotFoundError | NotAllowedError,
   { event: Event }
 >;
+@Injectable()
 export class DeleteEventUseCase {
-  constructor(public eventRepository: EventRepository) {}
+  constructor(
+    @Inject(EventRepository) public eventRepository: EventRepository,
+    @Inject(AuthorRepository) public authorRepository: AuthorRepository,
+  ) {}
   async execute({
-    id,
-    userId,
+    Id,
+    eventId,
   }: DeleteEventUseCaseRequest): Promise<DeleteEventUseCaseResponse> {
-    const event = await this.eventRepository.findById(id);
+    const author = await this.authorRepository.findById(Id);
+
+    if (!author) {
+      return left(new ResourceNotFoundError());
+    }
+    if (author.typeUser !== 'ADMIN') {
+      return left(new NotAllowedError());
+    }
+
+    const event = await this.eventRepository.findById(eventId);
+
     if (!event) {
-      return left(new WrongcredentialError());
+      return left(new ResourceNotFoundError());
     }
-    if (event.authorId !== userId) {
-      return left(new WrongcredentialError());
-    } else {
-      await this.eventRepository.delete(id);
-      return right({ event });
+
+    if (author.authorId !== event.authorId) {
+      return left(new NotAllowedError());
     }
+
+    this.eventRepository.delete(eventId);
+
+    return right({ event });
   }
 }

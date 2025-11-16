@@ -1,33 +1,44 @@
 import { left, right, type Either } from '@/core/either';
-import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { EventRepository } from '../../repositories/event-repository';
 import { Event } from '@/domain/enterprise/entities/events';
+import { AuthorRepository } from '../../repositories/author-repository';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
 interface EditEventUseCaseRequest {
-  id: string;
-  userId: string; //id from user that want delete
+  Id: string; //id from admin
+  eventId: string;
   title: string;
   content: string;
   time: string;
   colaborators: string;
 }
-type EditEventUseCaseResponse = Either<WrongcredentialError, { event: Event }>;
+type EditEventUseCaseResponse = Either<
+  ResourceNotFoundError | NotAllowedError,
+  { event: Event }
+>;
 export class EditEventUseCase {
-  constructor(public eventRepository: EventRepository) {}
+  constructor(
+    public eventRepository: EventRepository,
+    public authorRepository: AuthorRepository,
+  ) {}
   async execute({
-    id,
-    userId,
+    Id,
+    eventId,
     title,
     content,
     time,
     colaborators,
   }: EditEventUseCaseRequest): Promise<EditEventUseCaseResponse> {
-    const event = await this.eventRepository.findById(id);
-    if (!event) {
-      return left(new WrongcredentialError());
+    const author = await this.authorRepository.findById(Id);
+    if (!author) {
+      return left(new ResourceNotFoundError());
     }
-    if (event.authorId !== userId) {
+    if (author.typeUser !== 'ADMIN') {
+      return left(new NotAllowedError());
+    }
+    const event = await this.eventRepository.findById(eventId);
+    if (author.authorId !== event.authorId) {
       return left(new NotAllowedError());
     } else {
       event.title = title;

@@ -3,7 +3,7 @@ import { Question } from '@/domain/enterprise/entities/questions';
 import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
 import { EventAreNotExitsError } from '@/core/errors/event-are-not-exist-error';
 import type { QuestionRepository } from '@/domain/aplication/repositories/question-repository';
-import type { EventsRepository } from '@/domain/aplication/repositories/event-repository';
+import type { EventRepository } from '@/domain/aplication/repositories/event-repository';
 
 interface CreateQuestionUseCaseRequest {
   id: string; //id from event
@@ -17,7 +17,7 @@ type CreateQuestionUseCaseResponse = Either<
 export class CreateQuestionUseCase {
   constructor(
     public questionRepository: QuestionRepository,
-    public eventRepository: EventsRepository,
+    public eventRepository: EventRepository,
   ) {}
   async execute({
     id,

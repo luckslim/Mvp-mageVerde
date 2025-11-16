@@ -19,14 +19,20 @@ export class PrismaEventRepository implements EventRepository {
         title,
       },
     });
+    if (!event) {
+      return null;
+    }
     return PrismaEventMapper.toDomain(event);
   }
   async findById(id: string): Promise<Event | null> {
-    const event = await this.prisma.event.findUnique({
+    const event = await this.prisma.event.findFirst({
       where: {
         id,
       },
     });
+    if (!event) {
+      return null;
+    }
     return PrismaEventMapper.toDomain(event);
   }
   async findByAll(): Promise<Event[] | null> {

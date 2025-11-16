@@ -2,24 +2,36 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { InMemoryEventRepository } from 'test/repository/in-memory-events-repository';
 import { EditEventUseCase } from './edit-events-use-case';
 import { makeEvent } from 'test/factory/make-events-factory';
+import { InMemoryAuthorRepository } from 'test/repository/in-memory-author-repository';
+import { makeAuthor } from 'test/factory/make-author-factory';
 
 let inMemoryEventRepository: InMemoryEventRepository;
+let inMemoryAuthorRepository: InMemoryAuthorRepository;
 let sut: EditEventUseCase;
 describe('adit event', () => {
   beforeEach(() => {
     inMemoryEventRepository = new InMemoryEventRepository();
-    sut = new EditEventUseCase(inMemoryEventRepository);
+    inMemoryAuthorRepository = new InMemoryAuthorRepository();
+    sut = new EditEventUseCase(
+      inMemoryEventRepository,
+      inMemoryAuthorRepository,
+    );
   });
   it('should be able edit event', async () => {
     for (let i = 0; i < 10; i++) {
       const event = makeEvent();
       inMemoryEventRepository.items.push(event);
     }
-    const eventSelected = makeEvent();
+    const selectedAuthor = makeAuthor();
+    inMemoryAuthorRepository.items.push(selectedAuthor);
+
+    const eventSelected = makeEvent({
+      authorId: selectedAuthor.authorId,
+    });
     inMemoryEventRepository.items.push(eventSelected);
     const result = await sut.execute({
-      id: eventSelected.id.toString(),
-      userId: eventSelected.authorId,
+      Id: selectedAuthor.authorId,
+      eventId: eventSelected.id.toString(),
       title: 'New Title',
       content: 'new content, hello world!',
       colaborators: 'new colaboration',
@@ -37,7 +49,7 @@ describe('adit event', () => {
       },
     });
   });
-  it('should not be able edit event another userId', async () => {
+  it('should not be able edit event another Id', async () => {
     for (let i = 0; i < 10; i++) {
       const event = makeEvent();
       inMemoryEventRepository.items.push(event);
@@ -45,8 +57,8 @@ describe('adit event', () => {
     const eventSelected = makeEvent();
     inMemoryEventRepository.items.push(eventSelected);
     const result = await sut.execute({
-      id: eventSelected.id.toString(),
-      userId: new UniqueEntityID().toString(),
+      Id: new UniqueEntityID().toString(),
+      eventId: new UniqueEntityID().toString(),
       title: 'New Title',
       content: 'new content, hello world!',
       colaborators: 'new colaboration',
