@@ -39,6 +39,7 @@ describe('authenticate Admin (E2E)', () => {
         password: '123456',
       });
     expect(response.statusCode).toBe(200);
+
     expect(response.body).toEqual({
       access_Token: expect.any(String),
     });

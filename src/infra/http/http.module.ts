@@ -21,6 +21,8 @@ import { CreateEventController } from './controllers/event-controllers/create-ev
 import { CreateEventUseCase } from '@/domain/aplication/use-cases/event/create-events-use-case';
 import { DeleteEventController } from './controllers/event-controllers/delete-event-controller';
 import { DeleteEventUseCase } from '@/domain/aplication/use-cases/event/delete-events-use-case';
+import { GetEventController } from './controllers/event-controllers/get-event-controller';
+import { GetEventUseCase } from '@/domain/aplication/use-cases/event/get-event-use-case';
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -35,6 +37,7 @@ import { DeleteEventUseCase } from '@/domain/aplication/use-cases/event/delete-e
     EditAdminController,
     CreateEventController,
     DeleteEventController,
+    GetEventController,
   ],
   providers: [
     CreateUserUseCase,
@@ -47,6 +50,7 @@ import { DeleteEventUseCase } from '@/domain/aplication/use-cases/event/delete-e
     EditAdminUseCase,
     CreateEventUseCase,
     DeleteEventUseCase,
+    GetEventUseCase,
   ],
 })
 export class HttpModule {}
