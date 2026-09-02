@@ -6,8 +6,6 @@ import { AdminRepository } from '@/domain/aplication/repositories/admin-reposito
 import { PrismaAdminRepository } from './prisma/repository/prisma-admin-repository';
 import { PrismaEventRepository } from './prisma/repository/prisma-event-repository';
 import { EventRepository } from '@/domain/aplication/repositories/event-repository';
-import { PrismaAuthorRepository } from './prisma/repository/prisma-author-repository.';
-import { AuthorRepository } from '@/domain/aplication/repositories/author-repository';
 
 @Module({
   providers: [
@@ -15,14 +13,7 @@ import { AuthorRepository } from '@/domain/aplication/repositories/author-reposi
     { provide: UserRepository, useClass: PrismaUserRepository },
     { provide: AdminRepository, useClass: PrismaAdminRepository },
     { provide: EventRepository, useClass: PrismaEventRepository },
-    { provide: AuthorRepository, useClass: PrismaAuthorRepository },
   ],
-  exports: [
-    PrismaService,
-    UserRepository,
-    AdminRepository,
-    EventRepository,
-    AuthorRepository,
-  ],
+  exports: [PrismaService, UserRepository, AdminRepository, EventRepository],
 })
 export class DatabaseModule {}

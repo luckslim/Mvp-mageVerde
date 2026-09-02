@@ -4,7 +4,7 @@ import { DeleteEventUseCase } from './delete-events-use-case';
 import { makeEvent } from 'test/factory/make-events-factory';
 import { InMemoryAuthorRepository } from 'test/repository/in-memory-author-repository';
 import { makeAuthor } from 'test/factory/make-author-factory';
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { NotAllowedError } from '@/core/errors/not-allowed-error';
 
 let inMemoryEventRepository: InMemoryEventRepository;
 let inMemoryAuthorRepository: InMemoryAuthorRepository;
@@ -13,10 +13,7 @@ describe('delete event', () => {
   beforeEach(() => {
     inMemoryEventRepository = new InMemoryEventRepository();
     inMemoryAuthorRepository = new InMemoryAuthorRepository();
-    sut = new DeleteEventUseCase(
-      inMemoryEventRepository,
-      inMemoryAuthorRepository,
-    );
+    sut = new DeleteEventUseCase(inMemoryEventRepository);
   });
   it('should be able delete an event', async () => {
     for (let i = 0; i < 10; i++) {
@@ -51,6 +48,6 @@ describe('delete event', () => {
       eventId: eventSelected.id.toString(),
     });
     expect(result.isLeft()).toBe(true);
-    expect(result.value).instanceof(ResourceNotFoundError);
+    expect(result.value).instanceof(NotAllowedError);
   });
 });

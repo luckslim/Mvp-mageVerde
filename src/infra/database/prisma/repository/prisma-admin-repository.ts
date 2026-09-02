@@ -3,26 +3,16 @@ import { Admin } from '@/domain/enterprise/entities/admin';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
 import { PrismaAdminMapper } from '../mappers/prisma-admin-mapper';
-import { AuthorRepository } from '@/domain/aplication/repositories/author-repository';
-import { Author } from '@/domain/enterprise/entities/author';
 
 @Injectable()
 export class PrismaAdminRepository implements AdminRepository {
-  constructor(
-    private prisma: PrismaService,
-    private authorRepository: AuthorRepository,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async create(admin: Admin): Promise<void> {
     const data = PrismaAdminMapper.toPrisma(admin);
     await this.prisma.admin.create({
       data,
     });
-    const author = Author.create({
-      authorId: admin.id.toString(),
-      typeUser: 'ADMIN',
-    });
-    await this.authorRepository.create(author);
   }
 
   async findByEmail(email: string): Promise<Admin | null> {
@@ -44,6 +34,9 @@ export class PrismaAdminRepository implements AdminRepository {
         id,
       },
     });
+    if (!admin) {
+      return null;
+    }
     return PrismaAdminMapper.toDomain(admin);
   }
 

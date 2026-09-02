@@ -8,19 +8,17 @@ import { Test } from '@nestjs/testing';
 
 import request from 'supertest';
 import { AdminFactory } from 'test/factory/make-admin-factory';
-import { AuthorFactory } from 'test/factory/make-author-factory';
 
 describe('Create Event (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let Jwt: JwtService;
   let adminFactory: AdminFactory;
-  let authorFactory: AuthorFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [AdminFactory, AuthorFactory],
+      providers: [AdminFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -30,8 +28,6 @@ describe('Create Event (E2E)', () => {
     Jwt = moduleRef.get(JwtService);
 
     adminFactory = moduleRef.get(AdminFactory);
-
-    authorFactory = moduleRef.get(AuthorFactory);
 
     await app.init();
   });
@@ -44,16 +40,6 @@ describe('Create Event (E2E)', () => {
       },
     });
     expect(adminOnDataBase).toBeTruthy();
-
-    const author = await authorFactory.makePrismaAuthor({
-      authorId: admin.id.toString(),
-    });
-    const authorOnDataBase = await prisma.author.findFirst({
-      where: {
-        id: author.id.toString(),
-      },
-    });
-    expect(authorOnDataBase).toBeTruthy();
 
     const access_token = Jwt.sign({ sub: admin.id.toString() });
 

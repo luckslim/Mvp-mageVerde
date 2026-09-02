@@ -3,7 +3,6 @@ import { TitleAlreadyExistError } from '@/core/errors/title-already-exist-error'
 import { EventRepository } from '../../repositories/event-repository';
 import { Event } from '@/domain/enterprise/entities/events';
 import { Inject, Injectable } from '@nestjs/common';
-import { AuthorRepository } from '../../repositories/author-repository';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
@@ -22,7 +21,6 @@ type CreateEventUseCaseResponse = Either<
 export class CreateEventUseCase {
   constructor(
     @Inject(EventRepository) public eventRepository: EventRepository,
-    @Inject(AuthorRepository) public authorRepository: AuthorRepository,
   ) {}
   async execute({
     Id,
@@ -31,21 +29,13 @@ export class CreateEventUseCase {
     time,
     colaborators,
   }: CreateEventUseCaseRequest): Promise<CreateEventUseCaseResponse> {
-    const author = await this.authorRepository.findById(Id);
-    if (!author) {
-      return left(new ResourceNotFoundError());
-    }
-    if (author.typeUser !== 'ADMIN') {
-      return left(new NotAllowedError());
-    }
-
     const eventTitle = await this.eventRepository.findByTitle(title);
 
     if (eventTitle) {
       return left(new TitleAlreadyExistError(eventTitle.title));
     } else {
       const event = Event.create({
-        authorId: author.authorId,
+        authorId: Id,
         title,
         content,
         time,

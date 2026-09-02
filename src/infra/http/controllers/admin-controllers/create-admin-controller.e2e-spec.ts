@@ -38,13 +38,7 @@ describe('Create Admin (E2E)', () => {
         email: 'johnDoe@email.com',
       },
     });
-    expect(admin.email).toBe('johnDoe@email.com');
 
-    const author = await prisma.author.findFirst({
-      where: {
-        userId: admin.id,
-      },
-    });
-    expect(author.userId).toBe(admin.id);
+    expect(admin?.email).toBe('johnDoe@email.com');
   });
 });

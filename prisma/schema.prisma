@@ -26,34 +26,15 @@ model User {
   @@map("user")
 }
 
-enum AuthorType {
-  USER
-  ADMIN
-}
-
-model Author {
-  id       String       @id @default(uuid())
-  
-  type     AuthorType   @default(USER)
-
-  userId String @unique
-
-  questions Question[]
-  answers   Answer[]
-  events    Event[] @relation("AuthorEvents")
-
-  @@map("author")
-}
 
 model Event {
   id         String   @id @default(uuid())
-  authorId   String? 
+  authorId   String 
   title      String
   content    String
   colaborators String
   time String
   
-  authorRelation Author?   @relation("AuthorEvents", fields: [authorId], references: [userId], onDelete: Cascade)
   questions       Question[]
 
   @@map("event")
@@ -62,10 +43,9 @@ model Event {
 model Question {
   id        String   @id @default(uuid())
   content   String
-  authorId  String?
+  authorId  String
   eventId   String?
 
-  authorRelation Author?  @relation(fields: [authorId], references: [id], onDelete: Cascade)
   eventRelation  Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
   answers        Answer[]
 
@@ -74,11 +54,10 @@ model Question {
 
 model Answer {
   id         String   @id @default(uuid())
-  authorId   String?
+  authorId   String
   content    String
   questionId String?
 
-  authorRelation   Author?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   questionRelation Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@map("answer")

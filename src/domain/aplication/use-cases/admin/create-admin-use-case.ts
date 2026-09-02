@@ -36,6 +36,7 @@ export class CreateAdminUseCase {
         email,
         password: hashedPassword,
       });
+
       await this.adminRepository.create(admin);
       return right({ admin });
     }
