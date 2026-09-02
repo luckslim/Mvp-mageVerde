@@ -2,35 +2,26 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { InMemoryEventRepository } from 'test/repository/in-memory-events-repository';
 import { EditEventUseCase } from './edit-events-use-case';
 import { makeEvent } from 'test/factory/make-events-factory';
-import { InMemoryAuthorRepository } from 'test/repository/in-memory-author-repository';
-import { makeAuthor } from 'test/factory/make-author-factory';
 
 let inMemoryEventRepository: InMemoryEventRepository;
-let inMemoryAuthorRepository: InMemoryAuthorRepository;
 let sut: EditEventUseCase;
 describe('adit event', () => {
   beforeEach(() => {
     inMemoryEventRepository = new InMemoryEventRepository();
-    inMemoryAuthorRepository = new InMemoryAuthorRepository();
-    sut = new EditEventUseCase(
-      inMemoryEventRepository,
-      inMemoryAuthorRepository,
-    );
+    sut = new EditEventUseCase(inMemoryEventRepository);
   });
   it('should be able edit event', async () => {
     for (let i = 0; i < 10; i++) {
       const event = makeEvent();
       inMemoryEventRepository.items.push(event);
     }
-    const selectedAuthor = makeAuthor();
-    inMemoryAuthorRepository.items.push(selectedAuthor);
 
     const eventSelected = makeEvent({
-      authorId: selectedAuthor.authorId,
+      authorId: new UniqueEntityID().toString(),
     });
     inMemoryEventRepository.items.push(eventSelected);
     const result = await sut.execute({
-      Id: selectedAuthor.authorId,
+      Id: eventSelected.authorId,
       eventId: eventSelected.id.toString(),
       title: 'New Title',
       content: 'new content, hello world!',

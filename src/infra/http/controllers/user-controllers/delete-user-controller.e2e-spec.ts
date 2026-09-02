@@ -1,6 +1,5 @@
 import { AppModule } from '@/app.module';
 import { DatabaseModule } from '@/infra/database/databse.module';
-import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
@@ -11,7 +10,6 @@ import { UserFactory } from 'test/factory/make-users-factory';
 
 describe('Delete User (E2E)', () => {
   let app: INestApplication;
-  let prisma: PrismaService;
   let userFactory: UserFactory;
   let Jwt: JwtService;
   beforeAll(async () => {
@@ -21,8 +19,6 @@ describe('Delete User (E2E)', () => {
     }).compile();
 
     app = moduleRef.createNestApplication();
-
-    prisma = moduleRef.get(PrismaService);
 
     userFactory = moduleRef.get(UserFactory);
 
@@ -40,12 +36,7 @@ describe('Delete User (E2E)', () => {
       .send({
         email: user.email,
       });
-    const userDeleted = await prisma.user.findFirst({
-      where: {
-        email: user.email,
-      },
-    });
-    //expect(userDeleted).toBeNull();
+
     expect(response.statusCode).toBe(202);
   });
 });

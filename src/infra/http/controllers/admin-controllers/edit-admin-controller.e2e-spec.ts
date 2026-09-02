@@ -1,6 +1,5 @@
 import { AppModule } from '@/app.module';
 import { DatabaseModule } from '@/infra/database/databse.module';
-import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
@@ -11,7 +10,6 @@ import { AdminFactory } from 'test/factory/make-admin-factory';
 
 describe('Edit Admin (E2E)', () => {
   let app: INestApplication;
-  let prisma: PrismaService;
   let adminFactory: AdminFactory;
   let Jwt: JwtService;
   beforeAll(async () => {
@@ -21,8 +19,6 @@ describe('Edit Admin (E2E)', () => {
     }).compile();
 
     app = moduleRef.createNestApplication();
-
-    prisma = moduleRef.get(PrismaService);
 
     adminFactory = moduleRef.get(AdminFactory);
 
@@ -42,12 +38,7 @@ describe('Edit Admin (E2E)', () => {
         email: 'johnDoe@gmail.com',
         password: '123123',
       });
-    const adminEdited = await prisma.admin.findFirst({
-      where: {
-        id: admin.id.toString(),
-      },
-    });
-    //expect(adminEdited.name).toEqual('john Doe');
+
     expect(response.statusCode).toBe(201);
   });
 });

@@ -2,7 +2,6 @@ import { left, right, type Either } from '@/core/either';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { EventRepository } from '../../repositories/event-repository';
 import { Event } from '@/domain/enterprise/entities/events';
-import { AuthorRepository } from '../../repositories/author-repository';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
 interface EditEventUseCaseRequest {
@@ -18,10 +17,7 @@ type EditEventUseCaseResponse = Either<
   { event: Event }
 >;
 export class EditEventUseCase {
-  constructor(
-    public eventRepository: EventRepository,
-    public authorRepository: AuthorRepository,
-  ) {}
+  constructor(public eventRepository: EventRepository) {}
   async execute({
     Id,
     eventId,
@@ -30,15 +26,8 @@ export class EditEventUseCase {
     time,
     colaborators,
   }: EditEventUseCaseRequest): Promise<EditEventUseCaseResponse> {
-    const author = await this.authorRepository.findById(Id);
-    if (!author) {
-      return left(new ResourceNotFoundError());
-    }
-    if (author.typeUser !== 'ADMIN') {
-      return left(new NotAllowedError());
-    }
     const event = await this.eventRepository.findById(eventId);
-    if (author.authorId !== event.authorId) {
+    if (Id != event?.authorId) {
       return left(new NotAllowedError());
     } else {
       event.title = title;

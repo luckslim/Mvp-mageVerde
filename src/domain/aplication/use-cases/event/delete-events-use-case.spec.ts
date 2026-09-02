@@ -2,40 +2,36 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { InMemoryEventRepository } from 'test/repository/in-memory-events-repository';
 import { DeleteEventUseCase } from './delete-events-use-case';
 import { makeEvent } from 'test/factory/make-events-factory';
-import { InMemoryAuthorRepository } from 'test/repository/in-memory-author-repository';
-import { makeAuthor } from 'test/factory/make-author-factory';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 
 let inMemoryEventRepository: InMemoryEventRepository;
-let inMemoryAuthorRepository: InMemoryAuthorRepository;
 let sut: DeleteEventUseCase;
 describe('delete event', () => {
   beforeEach(() => {
     inMemoryEventRepository = new InMemoryEventRepository();
-    inMemoryAuthorRepository = new InMemoryAuthorRepository();
     sut = new DeleteEventUseCase(inMemoryEventRepository);
   });
+
   it('should be able delete an event', async () => {
     for (let i = 0; i < 10; i++) {
       const event = makeEvent();
       inMemoryEventRepository.items.push(event);
     }
-    const authorSelected = makeAuthor();
-    inMemoryAuthorRepository.items.push(authorSelected);
 
     const eventSelected = makeEvent({
-      authorId: authorSelected.authorId,
+      authorId: UniqueEntityID.toString(),
     });
     inMemoryEventRepository.items.push(eventSelected);
 
     const result = await sut.execute({
-      Id: authorSelected.authorId,
+      Id: eventSelected.authorId,
       eventId: eventSelected.id.toString(),
     });
 
     expect(result.isRight()).toBe(true);
     expect(inMemoryEventRepository.items).toHaveLength(10);
   });
+
   it('should not be able delete event with any ID', async () => {
     for (let i = 0; i < 10; i++) {
       const event = makeEvent();
