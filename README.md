@@ -16,11 +16,148 @@
   <b>Focado em desacoplamento, escalabilidade de código e organização por camadas de domínio.</b>
 </p>
 
-
 ## 🧠 Sobre o Projeto
 
 O **Magé Verde** é um backend projetado para divulgar e gerenciar eventos voltados ao turísmo ecológico .  
 Ele segue os princípios da **Clean Architecture**, garantindo independência de frameworks e fácil manutenção do core da aplicação.
+
+---
+
+### End-Points:
+
+| Método   | Endpoint                             | Descrição                            |
+| :------- | :----------------------------------- | :----------------------------------- |
+| **POST** | `http://localhost:3333/create/admin` | Cria uma nova conta de Administrador |
+
+#### Exemplo de Body:
+
+```json
+{
+  "name": "johnSnow",
+  "email": "johnSnow@gmail.com",
+  "password": "123123"
+}
+```
+
+---
+
+| Método   | Endpoint                                   | Descrição                      |
+| :------- | :----------------------------------------- | :----------------------------- |
+| **POST** | `http://localhost:3333/authenticate/admin` | Fazer Login como Administrador |
+
+#### Exemplo de Body:
+
+```json
+{
+  "email": "johnSnow@gmail.com",
+  "password": "123123"
+}
+```
+
+---
+
+| Método   | Endpoint                             | Descrição                      |
+| :------- | :----------------------------------- | :----------------------------- |
+| **POST** | `http://localhost:3333/delete/admin` | Excluir conta de Administrador |
+
+#### Exemplo de Body:
+
+### \_Bearer Token `${SEU_TOKEN}`
+
+```json
+{
+  "email": "johnSnow@gmail.com"
+}
+```
+
+---
+### End-Points:
+
+| Método   | Endpoint                             | Descrição                            |
+| :------- | :----------------------------------- | :----------------------------------- |
+| **POST** | `http://localhost:3333/create/user` | Cria uma nova conta de Usuário |
+
+#### Exemplo de Body:
+
+```json
+{
+  "name": "johnSnow",
+  "email": "johnSnow@gmail.com",
+  "password": "123123"
+}
+```
+
+---
+
+| Método   | Endpoint                                   | Descrição                      |
+| :------- | :----------------------------------------- | :----------------------------- |
+| **POST** | `http://localhost:3333/authenticate/user` | Fazer Login como Usuário |
+
+#### Exemplo de Body:
+
+```json
+{
+  "email": "johnSnow@gmail.com",
+  "password": "123123"
+}
+```
+
+---
+
+| Método   | Endpoint                             | Descrição                      |
+| :------- | :----------------------------------- | :----------------------------- |
+| **POST** | `http://localhost:3333/delete/user` | Excluir conta de Usuário |
+
+#### Exemplo de Body:
+
+### \_Bearer Token `${SEU_TOKEN}`
+
+```json
+{
+  "email": "johnSnow@gmail.com"
+}
+```
+
+---
+
+| Método   | Endpoint                             | Descrição            |
+| :------- | :----------------------------------- | :------------------- |
+| **POST** | `http://localhost:3333/create/event` | Criar um novo evento |
+
+#### Exemplo de Body:
+
+### \_Bearer Token `${SEU_TOKEN}`
+
+```json
+{
+      "title":"Conteúdo",
+      "content":"Conteúdo",
+      "colaborators":"Conteúdo",
+      "time":"Conteúdo",
+}
+```
+
+---
+
+| Método   | Endpoint                             | Descrição            |
+| :------- | :----------------------------------- | :------------------- |
+| **POST** | `http://localhost:3333/delete/event` | Deletar um evento |
+
+#### Exemplo de Body:
+
+### \_Bearer Token `${SEU_TOKEN}`
+
+```json
+{
+      "eventId":"*****-*****-*****"
+}
+```
+
+---
+
+| Método   | Endpoint                             | Descrição            |
+| :------- | :----------------------------------- | :------------------- |
+| **GET** | `http://localhost:3333/get/events` | Listar todos os eventos |
 
 ---
 
@@ -38,6 +175,7 @@ $ npm run test:e2e
 ```
 
 ## 🚀 Gerando Public e Private Keys para JWT (RSA256)
+
 <p align="center">
   <b>O algoritmo RS256 usa criptografia assimétrica, com:</b><br/>
   <b>private.key → usada para assinar o token</b><br/>
@@ -59,7 +197,6 @@ $ openssl rsa -in private.key -pubout -out public.key
 
 ## 🐳 Configuração do Docker
 
-
 <p align="center">
   <b>▶️ Rodar o ambiente Docker</b><br/>
 </p>
@@ -70,9 +207,7 @@ $ openssl rsa -in private.key -pubout -out public.key
 $ docker compose up -d
 ```
 
-
 ## 🗄️ Configurando a DATABASE_URL no Prisma
-
 
 <p align="center">
   <b>📌 Com o Docker rodando, seu Postgres estará disponível em:</b><br/>
@@ -89,4 +224,3 @@ $ docker compose up -d
 $ DATABASE_URL="postgresql://postgres:docker@localhost:5432/mageVerde-api?schema=public"
 
 ```
-
