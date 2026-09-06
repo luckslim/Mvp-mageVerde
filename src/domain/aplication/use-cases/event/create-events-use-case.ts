@@ -5,6 +5,10 @@ import { Event } from '@/domain/enterprise/entities/events';
 import { Inject, Injectable } from '@nestjs/common';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { UploadRepository } from '../../repositories/upload-repository';
+import { Upload } from '@/domain/enterprise/entities/upload';
+import { randomUUID } from 'crypto';
+import { readFileSync } from 'fs';
 
 interface CreateEventUseCaseRequest {
   Id: string; //id from user, got from jwt
@@ -12,6 +16,7 @@ interface CreateEventUseCaseRequest {
   content: string;
   time: string;
   colaborators: string;
+  body: string;
 }
 type CreateEventUseCaseResponse = Either<
   NotAllowedError | ResourceNotFoundError,
@@ -21,6 +26,7 @@ type CreateEventUseCaseResponse = Either<
 export class CreateEventUseCase {
   constructor(
     @Inject(EventRepository) public eventRepository: EventRepository,
+    @Inject(UploadRepository) public UploadRepository: UploadRepository,
   ) {}
   async execute({
     Id,
@@ -28,6 +34,7 @@ export class CreateEventUseCase {
     content,
     time,
     colaborators,
+    body,
   }: CreateEventUseCaseRequest): Promise<CreateEventUseCaseResponse> {
     const eventTitle = await this.eventRepository.findByTitle(title);
 
@@ -43,6 +50,22 @@ export class CreateEventUseCase {
       });
 
       await this.eventRepository.create(event);
+
+      if (body == null) {
+        return left(new ResourceNotFoundError());
+      }
+
+      const imageFile = readFileSync(body);
+
+      const fileName = `${randomUUID()}-${title}-${Id}`;
+
+      const file = Upload.create({
+        body: imageFile,
+        fileName,
+        userId: Id,
+      });
+
+      await this.UploadRepository.upload(file);
 
       return right({ event });
     }

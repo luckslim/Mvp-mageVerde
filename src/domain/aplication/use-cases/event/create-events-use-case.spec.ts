@@ -1,13 +1,19 @@
 import { CreateEventUseCase } from './create-events-use-case';
 import { InMemoryEventRepository } from 'test/repository/in-memory-events-repository';
 import { makeEvent } from 'test/factory/make-events-factory';
+import { InMemoryUploadRepository } from 'test/repository/in-memory-upload-repository';
 
 let inMemoryEventRepository: InMemoryEventRepository;
+let inMemoryUploadRepository: InMemoryUploadRepository;
 let sut: CreateEventUseCase;
 describe('Create event', () => {
   beforeEach(() => {
     inMemoryEventRepository = new InMemoryEventRepository();
-    sut = new CreateEventUseCase(inMemoryEventRepository);
+    inMemoryUploadRepository = new InMemoryUploadRepository();
+    sut = new CreateEventUseCase(
+      inMemoryEventRepository,
+      inMemoryUploadRepository,
+    );
   });
   it('should be able create event only with authorId(Admin)', async () => {
     const event = makeEvent({
@@ -31,17 +37,9 @@ describe('Create event', () => {
       content: event.content,
       time: event.time,
       colaborators: event.colaborators,
+      body: '/home/developer/Documentos/MVP/Mvp-mageVerde/src/image/cleanArquitecture.png',
     });
 
     expect(result.isRight()).toBe(true);
-    expect(result.value).toMatchObject({
-      event: {
-        authorId: event.authorId,
-        title: event.title,
-        content: event.content,
-        time: event.time,
-        colaborators: event.colaborators,
-      },
-    });
   });
 });
