@@ -15,6 +15,7 @@ export function makeEvent(
       content: faker.lorem.text(),
       colaborators: faker.word.noun(),
       time: faker.word.noun(),
+      fileUrl: faker.internet.url(),
       ...override,
     },
     id,

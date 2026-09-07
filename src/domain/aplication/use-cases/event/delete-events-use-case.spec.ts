@@ -3,13 +3,19 @@ import { InMemoryEventRepository } from 'test/repository/in-memory-events-reposi
 import { DeleteEventUseCase } from './delete-events-use-case';
 import { makeEvent } from 'test/factory/make-events-factory';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
+import { InMemoryUploadRepository } from 'test/repository/in-memory-upload-repository';
 
 let inMemoryEventRepository: InMemoryEventRepository;
+let inMemoryUploadRepository: InMemoryUploadRepository;
 let sut: DeleteEventUseCase;
 describe('delete event', () => {
   beforeEach(() => {
     inMemoryEventRepository = new InMemoryEventRepository();
-    sut = new DeleteEventUseCase(inMemoryEventRepository);
+    inMemoryUploadRepository = new InMemoryUploadRepository();
+    sut = new DeleteEventUseCase(
+      inMemoryEventRepository,
+      inMemoryUploadRepository,
+    );
   });
 
   it('should be able delete an event', async () => {
@@ -27,7 +33,6 @@ describe('delete event', () => {
       Id: eventSelected.authorId,
       eventId: eventSelected.id.toString(),
     });
-
     expect(result.isRight()).toBe(true);
     expect(inMemoryEventRepository.items).toHaveLength(10);
   });
