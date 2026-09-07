@@ -4,9 +4,13 @@ import {
   ConflictException,
   Controller,
   HttpCode,
+  MaxFileSizeValidator,
+  ParseFilePipe,
   Post,
   UnauthorizedException,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import z from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipes';
@@ -16,6 +20,7 @@ import { TokenPayloadSchema } from '@/infra/auth/jwt-strategy';
 import { EventAreNotExitsError } from '@/core/errors/event-are-not-exist-error';
 import { AuthGuard } from '@nestjs/passport';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 const createEventBodySchema = z.object({
   title: z.string(),
@@ -34,8 +39,19 @@ export class CreateEventController {
   constructor(public createEventUseCase: CreateEventUseCase) {}
   @Post()
   @HttpCode(201)
+  @UseInterceptors(FileInterceptor('file'))
   async handle(
-    @Body(bodyValidationPipe) body: CreateEventBodySchema,
+    @Body(bodyValidationPipe) bodyRequest: CreateEventBodySchema,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 1024 * 1024 * 2, // 2mb
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
     @CurrentUser() admin: TokenPayloadSchema,
   ) {
     const { sub } = admin;
@@ -44,7 +60,7 @@ export class CreateEventController {
       return new UnauthorizedException(NotAllowedError);
     }
 
-    const { title, content, colaborators, time } = body;
+    const { title, content, colaborators, time } = bodyRequest;
 
     const result = await this.createEventUseCase.execute({
       Id: sub,
@@ -52,6 +68,8 @@ export class CreateEventController {
       content,
       colaborators,
       time,
+      body: file.buffer,
+      mimeType: file.mimetype,
     });
 
     if (result.isLeft()) {
@@ -63,5 +81,7 @@ export class CreateEventController {
           throw new BadRequestException(error.message);
       }
     }
+
+    return result.value;
   }
 }

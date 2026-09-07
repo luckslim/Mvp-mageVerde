@@ -4,6 +4,7 @@ import { Event } from '@/domain/enterprise/entities/events';
 import { Inject, Injectable } from '@nestjs/common';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
+import { UploadRepository } from '../../repositories/upload-repository';
 
 interface DeleteEventUseCaseRequest {
   eventId: string; //id from event
@@ -17,6 +18,7 @@ type DeleteEventUseCaseResponse = Either<
 export class DeleteEventUseCase {
   constructor(
     @Inject(EventRepository) public eventRepository: EventRepository,
+    @Inject(UploadRepository) public uploadRepository: UploadRepository,
   ) {}
   async execute({
     Id,
@@ -33,6 +35,8 @@ export class DeleteEventUseCase {
     }
 
     this.eventRepository.delete(eventId);
+
+    this.uploadRepository.deleteUpload(event.fileUrl);
 
     return right({ event });
   }

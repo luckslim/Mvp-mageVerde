@@ -3,6 +3,7 @@ import type { UniqueEntityID } from '@/core/entities/unique-entity-id';
 export interface uploadProps {
   userId: string;
   fileName: string;
+  mimeType: string;
   body: Buffer;
 }
 export class Upload extends Entity<uploadProps> {
@@ -11,6 +12,9 @@ export class Upload extends Entity<uploadProps> {
   }
   get fileName() {
     return this.props.fileName;
+  }
+  get mimeType() {
+    return this.props.mimeType;
   }
   get body() {
     return this.props.body;

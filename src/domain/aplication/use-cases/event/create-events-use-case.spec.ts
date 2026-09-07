@@ -2,6 +2,7 @@ import { CreateEventUseCase } from './create-events-use-case';
 import { InMemoryEventRepository } from 'test/repository/in-memory-events-repository';
 import { makeEvent } from 'test/factory/make-events-factory';
 import { InMemoryUploadRepository } from 'test/repository/in-memory-upload-repository';
+import { randomUUID } from 'node:crypto';
 
 let inMemoryEventRepository: InMemoryEventRepository;
 let inMemoryUploadRepository: InMemoryUploadRepository;
@@ -30,6 +31,7 @@ describe('Create event', () => {
       time: '11:00h',
       colaborators: 'Prefeitura de Magé',
     });
+    const bufferString = Buffer.from(randomUUID(), `utf-8`);
 
     const result = await sut.execute({
       Id: event.authorId,
@@ -37,7 +39,8 @@ describe('Create event', () => {
       content: event.content,
       time: event.time,
       colaborators: event.colaborators,
-      body: '/home/developer/Documentos/MVP/Mvp-mageVerde/src/image/cleanArquitecture.png',
+      body: bufferString,
+      mimeType: '.jpg',
     });
 
     expect(result.isRight()).toBe(true);

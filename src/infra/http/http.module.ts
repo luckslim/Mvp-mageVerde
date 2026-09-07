@@ -23,9 +23,10 @@ import { DeleteEventController } from './controllers/event-controllers/delete-ev
 import { DeleteEventUseCase } from '@/domain/aplication/use-cases/event/delete-events-use-case';
 import { GetEventController } from './controllers/event-controllers/get-event-controller';
 import { GetEventUseCase } from '@/domain/aplication/use-cases/event/get-event-use-case';
+import { StorageModule } from '../storage/r2-Storage.module';
 
 @Module({
-  imports: [DatabaseModule, CryptographyModule],
+  imports: [DatabaseModule, CryptographyModule, StorageModule],
   controllers: [
     CreateUserController,
     AuthenticateUserController,

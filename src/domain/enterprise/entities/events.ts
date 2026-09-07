@@ -6,6 +6,7 @@ export interface eventProps {
   content: string;
   time: string;
   colaborators: string;
+  fileUrl: string;
   createdAt?: Date;
 }
 export class Event extends Entity<eventProps> {
@@ -14,6 +15,9 @@ export class Event extends Entity<eventProps> {
   }
   get title() {
     return this.props.title;
+  }
+  get fileUrl() {
+    return this.props.fileUrl;
   }
   get content() {
     return this.props.content;
@@ -39,6 +43,9 @@ export class Event extends Entity<eventProps> {
   }
   set time(time: string) {
     this.props.time = time;
+  }
+  set fileUrl(fileUrl: string) {
+    this.props.fileUrl = fileUrl;
   }
   set colaborators(colaborators: string) {
     this.props.colaborators = colaborators;

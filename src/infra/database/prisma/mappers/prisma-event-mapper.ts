@@ -10,6 +10,7 @@ export class PrismaEventMapper {
         title: raw.title,
         content: raw.content,
         colaborators: raw.colaborators,
+        fileUrl: raw.fileUrl,
         time: raw.time,
       },
       new UniqueEntityID(raw.id),
@@ -22,6 +23,7 @@ export class PrismaEventMapper {
       authorId: event.authorId,
       title: event.title,
       content: event.content,
+      fileUrl: event.fileUrl,
       colaborators: event.colaborators,
       time: event.time,
     };

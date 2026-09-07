@@ -34,6 +34,7 @@ model Event {
   content    String
   colaborators String
   time String
+  fileUrl String
   
   questions       Question[]
 

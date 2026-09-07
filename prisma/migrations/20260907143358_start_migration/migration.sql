@@ -26,6 +26,7 @@ CREATE TABLE "event" (
     "content" TEXT NOT NULL,
     "colaborators" TEXT NOT NULL,
     "time" TEXT NOT NULL,
+    "fileUrl" TEXT NOT NULL,
 
     CONSTRAINT "event_pkey" PRIMARY KEY ("id")
 );

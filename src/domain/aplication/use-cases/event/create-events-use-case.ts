@@ -7,8 +7,6 @@ import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { UploadRepository } from '../../repositories/upload-repository';
 import { Upload } from '@/domain/enterprise/entities/upload';
-import { randomUUID } from 'crypto';
-import { readFileSync } from 'fs';
 
 interface CreateEventUseCaseRequest {
   Id: string; //id from user, got from jwt
@@ -16,11 +14,17 @@ interface CreateEventUseCaseRequest {
   content: string;
   time: string;
   colaborators: string;
-  body: string;
+  body: Buffer;
+  mimeType: string;
 }
 type CreateEventUseCaseResponse = Either<
   NotAllowedError | ResourceNotFoundError,
-  { event: Event }
+  {
+    event: Event;
+    upload: {
+      result: string;
+    };
+  }
 >;
 @Injectable()
 export class CreateEventUseCase {
@@ -35,6 +39,7 @@ export class CreateEventUseCase {
     time,
     colaborators,
     body,
+    mimeType,
   }: CreateEventUseCaseRequest): Promise<CreateEventUseCaseResponse> {
     const eventTitle = await this.eventRepository.findByTitle(title);
 
@@ -47,6 +52,7 @@ export class CreateEventUseCase {
         content,
         time,
         colaborators,
+        fileUrl: 'Undefined',
       });
 
       await this.eventRepository.create(event);
@@ -55,19 +61,20 @@ export class CreateEventUseCase {
         return left(new ResourceNotFoundError());
       }
 
-      const imageFile = readFileSync(body);
-
-      const fileName = `${randomUUID()}-${title}-${Id}`;
-
       const file = Upload.create({
-        body: imageFile,
-        fileName,
+        body,
+        fileName: event.id.toString(),
         userId: Id,
+        mimeType,
       });
 
-      await this.UploadRepository.upload(file);
+      const upload = await this.UploadRepository.upload(file);
 
-      return right({ event });
+      event.fileUrl = upload.result;
+
+      await this.eventRepository.save(event);
+
+      return right({ event, upload });
     }
   }
 }

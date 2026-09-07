@@ -36,7 +36,7 @@ describe('Delete Event (E2E)', () => {
     await app.init();
   });
 
-  test('[POST] /create/event', async () => {
+  test('[POST] /delete/event', async () => {
     const admin = await adminFactory.makePrismaAdmin({});
     const adminOnDataBase = await prisma.admin.findFirst({
       where: {
@@ -47,6 +47,8 @@ describe('Delete Event (E2E)', () => {
 
     const event = await eventFactory.makePrismaEvent({
       authorId: admin.id.toString(),
+      fileUrl:
+        'https://pub-d0fb9c440d214d0696cffacabdd99a19.r2.dev/e42687d4-3806-40c7-afdd-8e116580e7be',
     });
     const eventOnDataBase = await prisma.event.findFirst({
       where: {

@@ -46,13 +46,14 @@ describe('Create Event (E2E)', () => {
     const response = await request(app.getHttpServer())
       .post('/create/event')
       .set('Authorization', `Bearer ${access_token}`)
-      .send({
-        title: 'title',
-        content: 'content',
-        time: '18H',
-        colaborators: 'Prefeitura',
-      });
+      .field('title', 'title')
+      .field('content', 'content')
+      .field('time', '18H')
+      .field('colaborators', 'Prefeitura')
+      .attach('file', './src/image/Magé.jpeg');
+
     expect(response.statusCode).toBe(201);
+
     const eventOnDataBase = await prisma.event.findFirst({
       where: {
         authorId: admin.id.toString(),
