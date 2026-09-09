@@ -43,9 +43,11 @@ export class R2Storage implements UploadRepository {
     };
   }
   async deleteUpload(url: string): Promise<void> {
-    const httpFileKey = this.envService.get('HTTP_FILE_KEY');
+    const fileName = url.split('/').pop();
 
-    const fileName = url.replace(`${httpFileKey}/`, '');
+    if (!fileName) {
+      throw new Error(`URL de arquivo inválida: ${url}`);
+    }
 
     await this.client.send(
       new DeleteObjectCommand({

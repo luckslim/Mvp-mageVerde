@@ -48,7 +48,7 @@ describe('Delete Event (E2E)', () => {
     const event = await eventFactory.makePrismaEvent({
       authorId: admin.id.toString(),
       fileUrl:
-        'https://pub-d0fb9c440d214d0696cffacabdd99a19.r2.dev/e42687d4-3806-40c7-afdd-8e116580e7be',
+        'https://pub-d0fb9c440d214d0696cffacabdd99a19.r2.dev/77d28447-4624-4a55-b71a-8e5457f749f1',
     });
     const eventOnDataBase = await prisma.event.findFirst({
       where: {
