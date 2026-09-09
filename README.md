@@ -224,3 +224,4 @@ $ docker compose up -d
 $ DATABASE_URL="postgresql://postgres:docker@localhost:5432/mageVerde-api?schema=public"
 
 ```
+## 🚀 Deploy: `https://mvp-mageverde.onrender.com`
