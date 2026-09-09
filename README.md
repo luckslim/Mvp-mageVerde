@@ -136,7 +136,7 @@ Ele segue os princípios da **Clean Architecture**, garantindo independência de
       "time":"Conteúdo",
 }
 ```
-
+### \_Imagem `2Mb` 
 ---
 
 | Método   | Endpoint                             | Descrição            |
