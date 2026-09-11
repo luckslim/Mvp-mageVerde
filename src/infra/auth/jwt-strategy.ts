@@ -4,8 +4,12 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import z from 'zod';
 import { EnvService } from '../env/env.service';
 
+export const userRoleSchema = z.enum(['user', 'admin']);
+export type UserRole = z.infer<typeof userRoleSchema>;
+
 const tokenPayloadSchema = z.object({
   sub: z.string(),
+  role: userRoleSchema.default('user'),
 });
 export type TokenPayloadSchema = z.infer<typeof tokenPayloadSchema>;
 

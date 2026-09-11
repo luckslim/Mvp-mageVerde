@@ -46,6 +46,7 @@ export class AuthenticateAdminController {
     const { accessToken } = result.value;
     return {
       access_Token: accessToken,
+      role: 'admin',
     };
   }
 }

@@ -1,7 +1,7 @@
 import { EventRepository } from '@/domain/aplication/repositories/event-repository';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
-import { Event } from '@/domain/enterprise/entities/events';
+import { Event, EventStatus } from '@/domain/enterprise/entities/events';
 import { PrismaEventMapper } from '../mappers/prisma-event-mapper';
 
 @Injectable()
@@ -35,8 +35,11 @@ export class PrismaEventRepository implements EventRepository {
     }
     return PrismaEventMapper.toDomain(event);
   }
-  async findByAll(): Promise<Event[] | null> {
-    const events = await this.prisma.event.findMany();
+  async findByAll(status?: EventStatus): Promise<Event[] | null> {
+    const events = await this.prisma.event.findMany({
+      where: status ? { status } : undefined,
+      orderBy: { date: 'asc' },
+    });
     return events.map((event) => PrismaEventMapper.toDomain(event));
   }
   async save(event: Event): Promise<Event | null> {

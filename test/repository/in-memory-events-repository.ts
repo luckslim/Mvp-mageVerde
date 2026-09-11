@@ -1,5 +1,5 @@
 import { EventRepository } from '@/domain/aplication/repositories/event-repository';
-import { Event } from '@/domain/enterprise/entities/events';
+import { Event, EventStatus } from '@/domain/enterprise/entities/events';
 
 export class InMemoryEventRepository implements EventRepository {
   public items: Event[] = [];
@@ -10,8 +10,10 @@ export class InMemoryEventRepository implements EventRepository {
     }
     return event;
   }
-  async findByAll(): Promise<Event[] | null> {
-    const event = this.items;
+  async findByAll(status?: EventStatus): Promise<Event[] | null> {
+    const event = status
+      ? this.items.filter((item) => item.status === status)
+      : this.items;
     return event;
   }
   async create(event: Event) {

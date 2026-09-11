@@ -27,12 +27,13 @@ export class AuthenticateUserController {
   @HttpCode(200)
   async handle(@Body(bodyValidationPipe) body: AuthenticateUserBodySchema) {
     const { email, password } = body;
-
+    console.log(body);
     const result = await this.authenticateUser.execute({
       email,
       password,
     });
 
+    console.log(result)
     if (result.isLeft()) {
       const error = result.value;
       switch (error.constructor) {
@@ -46,6 +47,7 @@ export class AuthenticateUserController {
     const { accessToken } = result.value;
     return {
       access_Token: accessToken,
+      role: 'user',
     };
   }
 }

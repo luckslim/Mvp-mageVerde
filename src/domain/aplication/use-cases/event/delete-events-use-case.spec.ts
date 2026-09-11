@@ -51,4 +51,18 @@ describe('delete event', () => {
     expect(result.isLeft()).toBe(true);
     expect(result.value).instanceof(NotAllowedError);
   });
+
+  it('should allow an admin to delete an event from another author', async () => {
+    const event = makeEvent({ authorId: 'author-id' });
+    inMemoryEventRepository.items.push(event);
+
+    const result = await sut.execute({
+      Id: 'admin-id',
+      eventId: event.id.toString(),
+      role: 'admin',
+    });
+
+    expect(result.isRight()).toBe(true);
+    expect(inMemoryEventRepository.items).toHaveLength(0);
+  });
 });

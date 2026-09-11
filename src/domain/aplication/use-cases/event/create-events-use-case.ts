@@ -7,15 +7,19 @@ import { NotAllowedError } from '@/core/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { UploadRepository } from '../../repositories/upload-repository';
 import { Upload } from '@/domain/enterprise/entities/upload';
+import { EventStatus } from '@/domain/enterprise/entities/events';
 
 interface CreateEventUseCaseRequest {
   Id: string; //id from user, got from jwt
   title: string;
   content: string;
   time: string;
+  date?: Date;
+  location?: string;
   colaborators: string;
   body: Buffer;
   mimeType: string;
+  role?: 'user' | 'admin';
 }
 type CreateEventUseCaseResponse = Either<
   NotAllowedError | ResourceNotFoundError,
@@ -37,9 +41,12 @@ export class CreateEventUseCase {
     title,
     content,
     time,
+    date,
+    location,
     colaborators,
     body,
     mimeType,
+    role = 'user',
   }: CreateEventUseCaseRequest): Promise<CreateEventUseCaseResponse> {
     const eventTitle = await this.eventRepository.findByTitle(title);
 
@@ -52,6 +59,9 @@ export class CreateEventUseCase {
         content,
         time,
         colaborators,
+        date,
+        location,
+        status: role === 'admin' ? EventStatus.APPROVED : EventStatus.PENDING,
         fileUrl: 'Undefined',
       });
 

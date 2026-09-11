@@ -1,7 +1,9 @@
 import { GetEventUseCase } from '@/domain/aplication/use-cases/event/get-event-use-case';
-import { Controller, Get, HttpCode } from '@nestjs/common';
+import { Controller, Get, HttpCode, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('get/events')
+@UseGuards(AuthGuard('jwt'))
 export class GetEventController {
   constructor(public GetEventUseCase: GetEventUseCase) {}
   @Get()
