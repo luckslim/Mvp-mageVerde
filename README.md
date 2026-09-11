@@ -161,6 +161,24 @@ Ele segue os princípios da **Clean Architecture**, garantindo independência de
 
 ---
 
+| Método | Endpoint | Descrição |
+| :----- | :------- | :-------- |
+| **GET** | `http://localhost:3333/get/events/mine` | Listar os eventos criados pelo usuário autenticado |
+| **GET** | `http://localhost:3333/admin/events` | Listar somente eventos pendentes e retornar `pendingCount` — somente administradores |
+| **PATCH** | `http://localhost:3333/admin/events/:eventId/status` | Aprovar ou rejeitar evento pendente — somente administradores |
+
+Eventos criados por usuários começam como `PENDING` e só aparecem no guia público depois de serem aprovados. A rota `POST /delete/event` permite que administradores excluam qualquer evento; usuários comuns só podem excluir eventos criados por eles mesmos.
+
+#### Exemplo de moderação
+
+```json
+{
+  "status": "APPROVED"
+}
+```
+
+---
+
 ## 🚀 Setup
 
 ```bash

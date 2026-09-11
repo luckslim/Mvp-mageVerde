@@ -35,6 +35,14 @@ export class PrismaEventRepository implements EventRepository {
     }
     return PrismaEventMapper.toDomain(event);
   }
+  async findByAuthorId(authorId: string): Promise<Event[]> {
+    const events = await this.prisma.event.findMany({
+      where: { authorId },
+      orderBy: { date: 'asc' },
+    });
+
+    return events.map((event) => PrismaEventMapper.toDomain(event));
+  }
   async findByAll(status?: EventStatus): Promise<Event[] | null> {
     const events = await this.prisma.event.findMany({
       where: status ? { status } : undefined,

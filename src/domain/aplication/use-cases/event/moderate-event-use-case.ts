@@ -5,6 +5,7 @@ import {
   EventStatus,
 } from '@/domain/enterprise/entities/events';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { EventAlreadyModeratedError } from '@/core/errors/event-already-moderated-error';
 import { left, right, type Either } from '@/core/either';
 
 interface ModerateEventUseCaseRequest {
@@ -13,7 +14,7 @@ interface ModerateEventUseCaseRequest {
 }
 
 type ModerateEventUseCaseResponse = Either<
-  ResourceNotFoundError,
+  ResourceNotFoundError | EventAlreadyModeratedError,
   { event: Event }
 >;
 
@@ -31,6 +32,10 @@ export class ModerateEventUseCase {
 
     if (!event) {
       return left(new ResourceNotFoundError());
+    }
+
+    if (event.status !== EventStatus.PENDING) {
+      return left(new EventAlreadyModeratedError());
     }
 
     event.status = status;

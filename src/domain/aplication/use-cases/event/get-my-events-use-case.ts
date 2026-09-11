@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventRepository } from '../../repositories/event-repository';
-import { Event, EventStatus } from '@/domain/enterprise/entities/events';
+import { Event } from '@/domain/enterprise/entities/events';
 
 @Injectable()
-export class GetAllEventsUseCase {
+export class GetMyEventsUseCase {
   constructor(
     @Inject(EventRepository) public eventRepository: EventRepository,
   ) {}
 
-  async execute(status?: EventStatus): Promise<Event[]> {
-    return (await this.eventRepository.findByAll(status)) ?? [];
+  async execute(authorId: string): Promise<Event[]> {
+    return (await this.eventRepository.findByAuthorId(authorId)) ?? [];
   }
 }

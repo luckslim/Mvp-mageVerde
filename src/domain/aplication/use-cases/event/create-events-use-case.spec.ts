@@ -3,6 +3,7 @@ import { InMemoryEventRepository } from 'test/repository/in-memory-events-reposi
 import { makeEvent } from 'test/factory/make-events-factory';
 import { InMemoryUploadRepository } from 'test/repository/in-memory-upload-repository';
 import { randomUUID } from 'node:crypto';
+import { EventStatus } from '@/domain/enterprise/entities/events';
 
 let inMemoryEventRepository: InMemoryEventRepository;
 let inMemoryUploadRepository: InMemoryUploadRepository;
@@ -44,5 +45,27 @@ describe('Create event', () => {
     });
 
     expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.event.status).toBe(EventStatus.PENDING);
+    }
+  });
+
+  it('should create an event as approved when the author is an admin', async () => {
+    const event = makeEvent();
+    const result = await sut.execute({
+      Id: event.authorId,
+      title: event.title,
+      content: event.content,
+      time: event.time,
+      colaborators: event.colaborators,
+      body: Buffer.from(randomUUID(), 'utf-8'),
+      mimeType: 'image/jpeg',
+      role: 'admin',
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.event.status).toBe(EventStatus.APPROVED);
+    }
   });
 });

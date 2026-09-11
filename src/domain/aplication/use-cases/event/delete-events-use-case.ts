@@ -36,9 +36,9 @@ export class DeleteEventUseCase {
       return left(new NotAllowedError());
     }
 
-    this.eventRepository.delete(eventId);
+    await this.eventRepository.delete(eventId);
 
-    this.uploadRepository.deleteUpload(event.fileUrl);
+    await this.uploadRepository.deleteUpload(event.fileUrl);
 
     return right({ event });
   }
