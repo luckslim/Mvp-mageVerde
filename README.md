@@ -167,12 +167,32 @@ Ele segue os princípios da **Clean Architecture**, garantindo independência de
 # Instalar dependências
 $ npm install
 
+# Configurar o ambiente
+$ cp .env.example .env
+
+# Subir o PostgreSQL local na porta 5433
+$ docker compose up -d postgres
+
+# Aplicar as migrações
+$ npx prisma migrate deploy
+
+# Criar dados de teste
+$ npm run db:seed
+
+# Iniciar a API
+$ npm run start:dev
+
 # Rodar os testes unitários
 $ npm run test
 
 # Rodar testes E2E
 $ npm run test:e2e
 ```
+
+As credenciais criadas pelo seed são:
+
+- Usuário: `usuario@mageverde.local` / `123456`
+- Administrador: `admin@mageverde.local` / `123456`
 
 ## 🚀 Gerando Public e Private Keys para JWT (RSA256)
 
@@ -212,7 +232,7 @@ $ docker compose up -d
 <p align="center">
   <b>📌 Com o Docker rodando, seu Postgres estará disponível em:</b><br/>
   <b>HOST → localhost</b><br/>
-  <b>PORT → 5432</b><br/>
+  <b>PORT → 5433</b><br/>
   <b>USER → postgres</b><br/>
   <b>PASSWORD → docker</b><br/>
   <b>DATABASE → mageVerde-api</b><br/>
@@ -221,7 +241,7 @@ $ docker compose up -d
 ```bash
 #  DATABASE_URL recomendada
 
-$ DATABASE_URL="postgresql://postgres:docker@localhost:5432/mageVerde-api?schema=public"
+$ DATABASE_URL="postgresql://postgres:docker@localhost:5433/mageVerde-api?schema=public"
 
 ```
 ## 🚀 Deploy: `https://mvp-mageverde.onrender.com`

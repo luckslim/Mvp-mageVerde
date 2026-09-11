@@ -23,7 +23,11 @@ import { DeleteEventController } from './controllers/event-controllers/delete-ev
 import { DeleteEventUseCase } from '@/domain/aplication/use-cases/event/delete-events-use-case';
 import { GetEventController } from './controllers/event-controllers/get-event-controller';
 import { GetEventUseCase } from '@/domain/aplication/use-cases/event/get-event-use-case';
+import { AdminEventController } from './controllers/event-controllers/admin-event-controller';
+import { GetAllEventsUseCase } from '@/domain/aplication/use-cases/event/get-all-events-use-case';
+import { ModerateEventUseCase } from '@/domain/aplication/use-cases/event/moderate-event-use-case';
 import { StorageModule } from '../storage/r2-Storage.module';
+import { AdminGuard } from '@/infra/auth/admin.guard';
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -39,6 +43,7 @@ import { StorageModule } from '../storage/r2-Storage.module';
     CreateEventController,
     DeleteEventController,
     GetEventController,
+    AdminEventController,
   ],
   providers: [
     CreateUserUseCase,
@@ -52,6 +57,9 @@ import { StorageModule } from '../storage/r2-Storage.module';
     CreateEventUseCase,
     DeleteEventUseCase,
     GetEventUseCase,
+    GetAllEventsUseCase,
+    ModerateEventUseCase,
+    AdminGuard,
   ],
 })
 export class HttpModule {}

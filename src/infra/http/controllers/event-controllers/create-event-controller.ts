@@ -26,6 +26,8 @@ const createEventBodySchema = z.object({
   title: z.string(),
   content: z.string(),
   time: z.string(),
+  date: z.coerce.date().optional(),
+  location: z.string().optional(),
   colaborators: z.string(),
 });
 
@@ -52,15 +54,15 @@ export class CreateEventController {
       }),
     )
     file: Express.Multer.File,
-    @CurrentUser() admin: TokenPayloadSchema,
+    @CurrentUser() user: TokenPayloadSchema,
   ) {
-    const { sub } = admin;
-
-    if (!admin) {
-      return new UnauthorizedException(NotAllowedError);
+    if (!user) {
+      throw new UnauthorizedException(NotAllowedError);
     }
 
-    const { title, content, colaborators, time } = bodyRequest;
+    const { sub, role } = user;
+
+    const { title, content, colaborators, time, date, location } = bodyRequest;
 
     const result = await this.createEventUseCase.execute({
       Id: sub,
@@ -68,8 +70,11 @@ export class CreateEventController {
       content,
       colaborators,
       time,
+      date,
+      location,
       body: file.buffer,
       mimeType: file.mimetype,
+      role,
     });
 
     if (result.isLeft()) {

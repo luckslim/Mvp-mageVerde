@@ -32,16 +32,17 @@ export class DeleteEventController {
   @HttpCode(201)
   async handle(
     @Body(bodyValidationPipe) body: DeleteEventBodySchema,
-    @CurrentUser() admin: TokenPayloadSchema,
+    @CurrentUser() user: TokenPayloadSchema,
   ) {
-    const { sub } = admin;
-    if (!admin) {
-      return new UnauthorizedException();
+    if (!user) {
+      throw new UnauthorizedException();
     }
+    const { sub, role } = user;
     const { eventId } = body;
     const result = await this.deleteEventUseCase.execute({
       Id: sub,
       eventId,
+      role,
     });
     if (result.isLeft()) {
       const error = result.value;

@@ -9,6 +9,7 @@ import { UploadRepository } from '../../repositories/upload-repository';
 interface DeleteEventUseCaseRequest {
   eventId: string; //id from event
   Id: string; //id from user
+  role?: 'user' | 'admin';
 }
 type DeleteEventUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
@@ -23,6 +24,7 @@ export class DeleteEventUseCase {
   async execute({
     Id,
     eventId,
+    role = 'user',
   }: DeleteEventUseCaseRequest): Promise<DeleteEventUseCaseResponse> {
     const event = await this.eventRepository.findById(eventId);
 
@@ -30,7 +32,7 @@ export class DeleteEventUseCase {
       return left(new ResourceNotFoundError());
     }
 
-    if (event.authorId != Id) {
+    if (role !== 'admin' && event.authorId !== Id) {
       return left(new NotAllowedError());
     }
 

@@ -35,10 +35,19 @@ model Event {
   colaborators String
   time String
   fileUrl String
+  date       DateTime?
+  location   String?
+  status     EventStatus @default(PENDING)
   
   questions       Question[]
 
   @@map("event")
+}
+
+enum EventStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 model Question {
