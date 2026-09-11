@@ -4,6 +4,7 @@ import { AdminRepository } from '../../repositories/admin-repository';
 import { Encrypter } from '../../cryptography/encrypter';
 import { HashComparer } from '../../cryptography/hash-comparer';
 import { Inject, Injectable } from '@nestjs/common';
+import { normalizeEmail } from '@/core/utils/normalize-email';
 
 interface AuthenticateAdminUseCaseRequest {
   email: string;
@@ -24,7 +25,7 @@ export class AuthenticateAdminUseCase {
     email,
     password,
   }: AuthenticateAdminUseCaseRequest): Promise<AuthenticateAdminUseCaseResponse> {
-    const admin = await this.adminRepository.findByEmail(email);
+    const admin = await this.adminRepository.findByEmail(normalizeEmail(email));
     if (!admin) {
       return left(new WrongcredentialError());
     }

@@ -4,6 +4,7 @@ import { Admin } from '@/domain/enterprise/entities/admin';
 import { AdminRepository } from '../../repositories/admin-repository';
 import { HashGenerator } from '../../cryptography/hash-generator';
 import { Inject, Injectable } from '@nestjs/common';
+import { normalizeEmail } from '@/core/utils/normalize-email';
 
 interface CreateAdminUseCaseRequest {
   name: string;
@@ -25,7 +26,9 @@ export class CreateAdminUseCase {
     email,
     password,
   }: CreateAdminUseCaseRequest): Promise<CreateAdminUseCaseResponse> {
-    const adminAlreadyExist = await this.adminRepository.findByEmail(email);
+    const normalizedEmail = normalizeEmail(email);
+    const adminAlreadyExist =
+      await this.adminRepository.findByEmail(normalizedEmail);
     if (adminAlreadyExist) {
       return left(new userAlreadyExistError());
     } else {
@@ -33,7 +36,7 @@ export class CreateAdminUseCase {
 
       const admin = Admin.create({
         name,
-        email,
+        email: normalizedEmail,
         password: hashedPassword,
       });
 

@@ -52,4 +52,19 @@ describe('authenticate admins', () => {
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(WrongcredentialError);
   });
+
+  it('should authenticate an admin regardless of email casing', async () => {
+    const admin = makeAdmins({
+      email: 'john.doe@email.com',
+      password: await fakeHasher.hash('123123'),
+    });
+    inMemoryAdminRepository.items.push(admin);
+
+    const result = await sut.execute({
+      email: '  JOHN.DOE@EMAIL.COM  ',
+      password: '123123',
+    });
+
+    expect(result.isRight()).toBe(true);
+  });
 });

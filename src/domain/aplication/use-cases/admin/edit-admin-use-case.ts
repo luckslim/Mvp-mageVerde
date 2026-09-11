@@ -4,6 +4,7 @@ import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import { AdminRepository } from '../../repositories/admin-repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { HashGenerator } from '../../cryptography/hash-generator';
+import { normalizeEmail } from '@/core/utils/normalize-email';
 
 interface EditAdminUseCaseRequest {
   id: string;
@@ -31,7 +32,7 @@ export class EditAdminUseCase {
 
     const passwordHashed = await this.hashGenerator.hash(password);
     admin.name = name;
-    admin.email = email;
+    admin.email = normalizeEmail(email);
     admin.password = passwordHashed;
     this.adminRepository.save(admin);
     return right({ admin });

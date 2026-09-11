@@ -29,7 +29,7 @@ describe('edit admins', () => {
     const result = await sut.execute({
       id: adminSelected.id.toString(),
       name: newAdmin.name,
-      email: newAdmin.email,
+      email: newAdmin.email.toUpperCase(),
       password: `${newAdmin.password}`,
     });
     expect(result.isRight()).toBe(true);

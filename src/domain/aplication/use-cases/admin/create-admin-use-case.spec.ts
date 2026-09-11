@@ -25,7 +25,7 @@ describe('Create admins', () => {
     expect(result.value).toMatchObject({
       admin: {
         name: 'johnSnow',
-        email: 'johnSnow@gmail.com',
+        email: 'johnsnow@gmail.com',
         password: '123123-hashed',
       },
     });

@@ -3,6 +3,7 @@ import { Admin } from '@/domain/enterprise/entities/admin';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import { AdminRepository } from '../../repositories/admin-repository';
 import { Inject, Injectable } from '@nestjs/common';
+import { normalizeEmail } from '@/core/utils/normalize-email';
 
 interface DeleteAdminUseCaseRequest {
   id: string;
@@ -25,7 +26,7 @@ export class DeleteAdminUseCase {
     if (!admin) {
       return left(new WrongcredentialError());
     }
-    if (admin.email !== email) {
+    if (admin.email !== normalizeEmail(email)) {
       return left(new WrongcredentialError());
     }
     this.adminRepository.delete(id);

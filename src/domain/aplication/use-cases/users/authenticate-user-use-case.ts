@@ -4,6 +4,7 @@ import { Encrypter } from '../../cryptography/encrypter';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import { HashComparer } from '../../cryptography/hash-comparer';
 import { Inject, Injectable } from '@nestjs/common';
+import { normalizeEmail } from '@/core/utils/normalize-email';
 
 interface AuthenticateUserUseCaseRequest {
   email: string;
@@ -24,7 +25,7 @@ export class AuthenticateUserUseCase {
     email,
     password,
   }: AuthenticateUserUseCaseRequest): Promise<AuthenticateUserUseCaseResponse> {
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmail(normalizeEmail(email));
     if (!user) {
       return left(new WrongcredentialError());
     }

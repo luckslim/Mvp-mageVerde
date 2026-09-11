@@ -25,7 +25,7 @@ describe('Create users', () => {
     expect(result.value).toMatchObject({
       user: {
         name: 'johnSnow',
-        email: 'johnSnow@gmail.com',
+        email: 'johnsnow@gmail.com',
         password: '123123-hashed',
       },
     });

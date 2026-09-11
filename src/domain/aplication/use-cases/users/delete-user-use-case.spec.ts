@@ -18,7 +18,7 @@ describe('delete users', () => {
     inMemoryUserRepository.items.push(userSelected);
     const result = await sut.execute({
       id: userSelected.id.toString(),
-      email: userSelected.email,
+      email: userSelected.email.toUpperCase(),
     });
     expect(result.isRight()).toBe(true);
   });

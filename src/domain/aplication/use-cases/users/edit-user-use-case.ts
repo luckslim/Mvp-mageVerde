@@ -4,6 +4,7 @@ import { UserRepository } from '../../repositories/user-repository';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import { Inject, Injectable } from '@nestjs/common';
 import { HashGenerator } from '../../cryptography/hash-generator';
+import { normalizeEmail } from '@/core/utils/normalize-email';
 
 interface EditUserUseCaseRequest {
   id: string;
@@ -32,7 +33,7 @@ export class EditUserUseCase {
 
     const passwordHashed = await this.hashGenerator.hash(password);
     user.name = name;
-    user.email = email;
+    user.email = normalizeEmail(email);
     user.password = passwordHashed;
     this.userRepository.save(user);
     return right({ user });
