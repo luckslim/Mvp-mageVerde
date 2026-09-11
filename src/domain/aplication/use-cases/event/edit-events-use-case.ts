@@ -27,15 +27,19 @@ export class EditEventUseCase {
     colaborators,
   }: EditEventUseCaseRequest): Promise<EditEventUseCaseResponse> {
     const event = await this.eventRepository.findById(eventId);
-    if (Id != event?.authorId) {
-      return left(new NotAllowedError());
-    } else {
-      event.title = title;
-      event.content = content;
-      event.time = time;
-      event.colaborators = colaborators;
-      this.eventRepository.save(event);
-      return right({ event });
+    if (!event) {
+      return left(new ResourceNotFoundError());
     }
+
+    if (Id !== event.authorId) {
+      return left(new NotAllowedError());
+    }
+
+    event.title = title;
+    event.content = content;
+    event.time = time;
+    event.colaborators = colaborators;
+    this.eventRepository.save(event);
+    return right({ event });
   }
 }

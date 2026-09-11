@@ -22,7 +22,7 @@ interface CreateEventUseCaseRequest {
   role?: 'user' | 'admin';
 }
 type CreateEventUseCaseResponse = Either<
-  NotAllowedError | ResourceNotFoundError,
+  TitleAlreadyExistError | NotAllowedError | ResourceNotFoundError,
   {
     event: Event;
     upload: {

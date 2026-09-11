@@ -3,6 +3,7 @@ import { User } from '@/domain/enterprise/entities/user';
 import { UserRepository } from '../../repositories/user-repository';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import { Inject, Injectable } from '@nestjs/common';
+import { normalizeEmail } from '@/core/utils/normalize-email';
 
 interface DeleteUserUseCaseRequest {
   id: string;
@@ -20,7 +21,7 @@ export class DeleteUserUseCase {
     if (!user) {
       return left(new WrongcredentialError());
     }
-    if (user.email !== email) {
+    if (user.email !== normalizeEmail(email)) {
       return left(new WrongcredentialError());
     }
     this.userRepository.delete(id);

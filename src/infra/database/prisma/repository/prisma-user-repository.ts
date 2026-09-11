@@ -3,6 +3,7 @@ import { User } from '@/domain/enterprise/entities/user';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
 import { PrismaUserMapper } from '../mappers/prisma-user-mapper';
+import { normalizeEmail } from '@/core/utils/normalize-email';
 
 @Injectable()
 export class PrismaUserRepository implements UserRepository {
@@ -17,7 +18,10 @@ export class PrismaUserRepository implements UserRepository {
   async findByEmail(email: string): Promise<User | null> {
     const user = await this.prisma.user.findFirst({
       where: {
-        email,
+        email: {
+          equals: normalizeEmail(email),
+          mode: 'insensitive',
+        },
       },
     });
 

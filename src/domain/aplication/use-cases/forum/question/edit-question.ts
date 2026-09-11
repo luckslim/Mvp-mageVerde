@@ -10,7 +10,7 @@ interface EditQuestionUseCaseRequest {
   content: string;
 }
 type EditQuestionUseCaseResponse = Either<
-  QuestionAreNotExitsError,
+  QuestionAreNotExitsError | NotAllowedError,
   { question: Question }
 >;
 export class EditQuestionUseCase {

@@ -3,6 +3,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  ForbiddenException,
   HttpCode,
   MaxFileSizeValidator,
   ParseFilePipe,
@@ -17,9 +18,10 @@ import { ZodValidationPipe } from '../../pipes/zod-validation-pipes';
 import { CreateEventUseCase } from '@/domain/aplication/use-cases/event/create-events-use-case';
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import { TokenPayloadSchema } from '@/infra/auth/jwt-strategy';
-import { EventAreNotExitsError } from '@/core/errors/event-are-not-exist-error';
 import { AuthGuard } from '@nestjs/passport';
 import { NotAllowedError } from '@/core/errors/not-allowed-error';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { TitleAlreadyExistError } from '@/core/errors/title-already-exist-error';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 const createEventBodySchema = z.object({
@@ -80,8 +82,12 @@ export class CreateEventController {
     if (result.isLeft()) {
       const error = result.value;
       switch (error.constructor) {
-        case EventAreNotExitsError:
+        case TitleAlreadyExistError:
           throw new ConflictException(error.message);
+        case NotAllowedError:
+          throw new ForbiddenException(error.message);
+        case ResourceNotFoundError:
+          throw new BadRequestException(error.message);
         default:
           throw new BadRequestException(error.message);
       }

@@ -1,9 +1,10 @@
 import {
   BadRequestException,
   Body,
-  ConflictException,
   Controller,
+  ForbiddenException,
   HttpCode,
+  NotFoundException,
   Post,
   UnauthorizedException,
   UseGuards,
@@ -14,7 +15,8 @@ import { DeleteEventUseCase } from '@/domain/aplication/use-cases/event/delete-e
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import { TokenPayloadSchema } from '@/infra/auth/jwt-strategy';
 import { AuthGuard } from '@nestjs/passport';
-import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
+import { NotAllowedError } from '@/core/errors/not-allowed-error';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
 const deleteEventBodySchema = z.object({
   eventId: z.string(),
@@ -47,8 +49,10 @@ export class DeleteEventController {
     if (result.isLeft()) {
       const error = result.value;
       switch (error.constructor) {
-        case WrongcredentialError:
-          throw new ConflictException(error.message);
+        case ResourceNotFoundError:
+          throw new NotFoundException(error.message);
+        case NotAllowedError:
+          throw new ForbiddenException(error.message);
         default:
           throw new BadRequestException(error.message);
       }

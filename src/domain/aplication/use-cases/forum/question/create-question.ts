@@ -1,6 +1,5 @@
 import { left, right, type Either } from '@/core/either';
 import { Question } from '@/domain/enterprise/entities/questions';
-import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
 import { EventAreNotExitsError } from '@/core/errors/event-are-not-exist-error';
 import type { QuestionRepository } from '@/domain/aplication/repositories/question-repository';
 import type { EventRepository } from '@/domain/aplication/repositories/event-repository';
@@ -11,7 +10,7 @@ interface CreateQuestionUseCaseRequest {
   content: string;
 }
 type CreateQuestionUseCaseResponse = Either<
-  userAlreadyExistError | EventAreNotExitsError,
+  EventAreNotExitsError,
   { question: Question }
 >;
 export class CreateQuestionUseCase {

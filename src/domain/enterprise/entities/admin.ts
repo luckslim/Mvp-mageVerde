@@ -1,5 +1,6 @@
 import { Entity } from '@/core/entities/entity';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
+import { normalizeEmail } from '@/core/utils/normalize-email';
 export interface adminProps {
   name: string;
   email: string;
@@ -16,7 +17,7 @@ export class Admin extends Entity<adminProps> {
     return this.props.password;
   }
   set email(email: string) {
-    this.props.email = email;
+    this.props.email = normalizeEmail(email);
   }
   set password(password: string) {
     this.props.password = password;
@@ -25,7 +26,10 @@ export class Admin extends Entity<adminProps> {
     this.props.name = name;
   }
   static create(props: adminProps, id?: UniqueEntityID) {
-    const admin = new Admin(props, id);
+    const admin = new Admin(
+      { ...props, email: normalizeEmail(props.email) },
+      id,
+    );
     return admin;
   }
 }

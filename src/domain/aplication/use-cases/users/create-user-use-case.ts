@@ -4,6 +4,7 @@ import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
 import { HashGenerator } from '../../cryptography/hash-generator';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserRepository } from '../../repositories/user-repository';
+import { normalizeEmail } from '@/core/utils/normalize-email';
 
 interface CreateUserUseCaseRequest {
   name: string;
@@ -22,14 +23,16 @@ export class CreateUserUseCase {
     email,
     password,
   }: CreateUserUseCaseRequest): Promise<CreateUserUseCaseResponse> {
-    const userAlreadyExist = await this.userRepository.findByEmail(email);
+    const normalizedEmail = normalizeEmail(email);
+    const userAlreadyExist =
+      await this.userRepository.findByEmail(normalizedEmail);
     if (userAlreadyExist) {
       return left(new userAlreadyExistError());
     } else {
       const hashedPassword = await this.hashGenerator.hash(password);
       const user = User.create({
         name,
-        email,
+        email: normalizedEmail,
         password: hashedPassword,
       });
       await this.userRepository.create(user);

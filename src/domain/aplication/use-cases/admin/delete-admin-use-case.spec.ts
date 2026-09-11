@@ -18,7 +18,7 @@ describe('delete events', () => {
     inMemoryAdminRepository.items.push(adminSelected);
     const result = await sut.execute({
       id: adminSelected.id.toString(),
-      email: adminSelected.email,
+      email: adminSelected.email.toUpperCase(),
     });
     expect(result.isRight()).toBe(true);
     expect(inMemoryAdminRepository.items).toHaveLength(10);

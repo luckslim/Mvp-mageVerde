@@ -10,7 +10,7 @@ interface EditAnswerUseCaseRequest {
   content: string;
 }
 type EditAnswerUseCaseResponse = Either<
-  AnswerAreNotExitsError,
+  AnswerAreNotExitsError | NotAllowedError,
   { answer: Answer }
 >;
 export class EditAnswerUseCase {

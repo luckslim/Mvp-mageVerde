@@ -3,6 +3,7 @@ import { Admin } from '@/domain/enterprise/entities/admin';
 import { PrismaService } from '../prisma.service';
 import { Injectable } from '@nestjs/common';
 import { PrismaAdminMapper } from '../mappers/prisma-admin-mapper';
+import { normalizeEmail } from '@/core/utils/normalize-email';
 
 @Injectable()
 export class PrismaAdminRepository implements AdminRepository {
@@ -18,7 +19,10 @@ export class PrismaAdminRepository implements AdminRepository {
   async findByEmail(email: string): Promise<Admin | null> {
     const admin = await this.prisma.admin.findFirst({
       where: {
-        email,
+        email: {
+          equals: normalizeEmail(email),
+          mode: 'insensitive',
+        },
       },
     });
 
