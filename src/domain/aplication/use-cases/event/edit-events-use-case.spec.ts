@@ -1,4 +1,5 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { InMemoryEventRepository } from 'test/repository/in-memory-events-repository';
 import { EditEventUseCase } from './edit-events-use-case';
 import { makeEvent } from 'test/factory/make-events-factory';
@@ -56,5 +57,19 @@ describe('adit event', () => {
       time: '11h:30m',
     });
     expect(result.isLeft()).toBe(true);
+  });
+
+  it('should return not found when the event does not exist', async () => {
+    const result = await sut.execute({
+      Id: new UniqueEntityID().toString(),
+      eventId: 'missing-event',
+      title: 'New Title',
+      content: 'new content, hello world!',
+      colaborators: 'new colaboration',
+      time: '11h:30m',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
 });

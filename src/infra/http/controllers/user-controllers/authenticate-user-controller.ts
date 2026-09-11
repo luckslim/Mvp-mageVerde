@@ -1,15 +1,15 @@
 import {
   BadRequestException,
   Body,
-  ConflictException,
   Controller,
   HttpCode,
   Post,
+  UnauthorizedException,
 } from '@nestjs/common';
 import z from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipes';
 import { AuthenticateUserUseCase } from '@/domain/aplication/use-cases/users/authenticate-user-use-case';
-import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
+import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 
 const authenticateUserBodySchema = z.object({
   email: z.email(),
@@ -27,18 +27,16 @@ export class AuthenticateUserController {
   @HttpCode(200)
   async handle(@Body(bodyValidationPipe) body: AuthenticateUserBodySchema) {
     const { email, password } = body;
-    console.log(body);
     const result = await this.authenticateUser.execute({
       email,
       password,
     });
 
-    console.log(result)
     if (result.isLeft()) {
       const error = result.value;
       switch (error.constructor) {
-        case userAlreadyExistError:
-          throw new ConflictException(error.message);
+        case WrongcredentialError:
+          throw new UnauthorizedException(error.message);
         default:
           throw new BadRequestException(error.message);
       }

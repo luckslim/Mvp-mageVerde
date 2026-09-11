@@ -26,15 +26,15 @@ export class EditUserUseCase {
     password,
   }: EditUserUseCaseRequest): Promise<EditUserUseCaseResponse> {
     const user = await this.userRepository.findById(id);
-    const passwordHashed = await this.hashGenerator.hash(password);
     if (!user) {
       return left(new WrongcredentialError());
-    } else {
-      user.name = name;
-      user.email = email;
-      user.password = passwordHashed;
-      this.userRepository.save(user);
-      return right({ user });
     }
+
+    const passwordHashed = await this.hashGenerator.hash(password);
+    user.name = name;
+    user.email = email;
+    user.password = passwordHashed;
+    this.userRepository.save(user);
+    return right({ user });
   }
 }

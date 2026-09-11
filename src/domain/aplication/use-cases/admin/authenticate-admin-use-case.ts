@@ -1,5 +1,4 @@
 import { left, right, type Either } from '@/core/either';
-import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import { AdminRepository } from '../../repositories/admin-repository';
 import { Encrypter } from '../../cryptography/encrypter';
@@ -11,7 +10,7 @@ interface AuthenticateAdminUseCaseRequest {
   password: string;
 }
 type AuthenticateAdminUseCaseResponse = Either<
-  userAlreadyExistError | WrongcredentialError,
+  WrongcredentialError,
   { accessToken: string }
 >;
 @Injectable()
@@ -27,7 +26,7 @@ export class AuthenticateAdminUseCase {
   }: AuthenticateAdminUseCaseRequest): Promise<AuthenticateAdminUseCaseResponse> {
     const admin = await this.adminRepository.findByEmail(email);
     if (!admin) {
-      return left(new userAlreadyExistError());
+      return left(new WrongcredentialError());
     }
     const isPasswordValid = await this.hashComparer.compare(
       password,

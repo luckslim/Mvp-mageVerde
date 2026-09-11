@@ -2,6 +2,7 @@ import { FakeEncrypter } from '../../../../../test/cryptography/fake-encrypter';
 import { FakeHasher } from '../../../../../test/cryptography/fake-hasher';
 import { makeAdmins } from '../../../../../test/factory/make-admin-factory';
 import { InMemoryAdminRepository } from '../../../../../test/repository/in-memory-admin-repository';
+import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import { AuthenticateAdminUseCase } from './authenticate-admin-use-case';
 
 let inMemoryAdminRepository: InMemoryAdminRepository;
@@ -40,5 +41,15 @@ describe('authenticate admins', () => {
       password: 'invalidPassword',
     });
     expect(result.isLeft()).toBe(true);
+  });
+
+  it('should not be able authenticate an admin that does not exist', async () => {
+    const result = await sut.execute({
+      email: 'missing-admin@email.com',
+      password: '123123',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(WrongcredentialError);
   });
 });

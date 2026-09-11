@@ -1,6 +1,5 @@
 import { left, right, type Either } from '@/core/either';
 import { UserRepository } from '../../repositories/user-repository';
-import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
 import { Encrypter } from '../../cryptography/encrypter';
 import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 import { HashComparer } from '../../cryptography/hash-comparer';
@@ -11,7 +10,7 @@ interface AuthenticateUserUseCaseRequest {
   password: string;
 }
 type AuthenticateUserUseCaseResponse = Either<
-  userAlreadyExistError | WrongcredentialError,
+  WrongcredentialError,
   { accessToken: string }
 >;
 @Injectable()
@@ -27,7 +26,7 @@ export class AuthenticateUserUseCase {
   }: AuthenticateUserUseCaseRequest): Promise<AuthenticateUserUseCaseResponse> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      return left(new userAlreadyExistError());
+      return left(new WrongcredentialError());
     }
     const isPasswordValid = await this.hashComparer.compare(
       password,

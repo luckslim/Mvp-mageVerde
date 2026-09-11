@@ -1,15 +1,15 @@
 import {
   BadRequestException,
   Body,
-  ConflictException,
   Controller,
   HttpCode,
   Post,
+  UnauthorizedException,
 } from '@nestjs/common';
 import z from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipes';
 import { AuthenticateAdminUseCase } from '@/domain/aplication/use-cases/admin/authenticate-admin-use-case';
-import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
+import { WrongcredentialError } from '@/core/errors/wrong-credentials-error';
 
 const authenticateAdminBodySchema = z.object({
   email: z.email(),
@@ -36,8 +36,8 @@ export class AuthenticateAdminController {
     if (result.isLeft()) {
       const error = result.value;
       switch (error.constructor) {
-        case userAlreadyExistError:
-          throw new ConflictException(error.message);
+        case WrongcredentialError:
+          throw new UnauthorizedException(error.message);
         default:
           throw new BadRequestException(error.message);
       }

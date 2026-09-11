@@ -1,7 +1,5 @@
 import { left, right, type Either } from '@/core/either';
 import { Answer } from '@/domain/enterprise/entities/answers';
-import { userAlreadyExistError } from '@/core/errors/user-already-exist-error';
-import { EventAreNotExitsError } from '@/core/errors/event-are-not-exist-error';
 import type { AnswerRepository } from '@/domain/aplication/repositories/answer-repository';
 import type { QuestionRepository } from '@/domain/aplication/repositories/question-repository';
 import { QuestionAreNotExitsError } from '@/core/errors/question-is-not-exist-error';
@@ -12,7 +10,7 @@ interface CreateAnswerUseCaseRequest {
   content: string;
 }
 type CreateAnswerUseCaseResponse = Either<
-  userAlreadyExistError | EventAreNotExitsError,
+  QuestionAreNotExitsError,
   { answer: Answer }
 >;
 export class CreateAnswerUseCase {
