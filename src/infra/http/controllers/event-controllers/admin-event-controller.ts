@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Get,
   HttpCode,
@@ -14,6 +15,7 @@ import { AdminGuard } from '@/infra/auth/admin.guard';
 import { EventStatus } from '@/domain/enterprise/entities/events';
 import { GetAllEventsUseCase } from '@/domain/aplication/use-cases/event/get-all-events-use-case';
 import { ModerateEventUseCase } from '@/domain/aplication/use-cases/event/moderate-event-use-case';
+import { EventAlreadyModeratedError } from '@/core/errors/event-already-moderated-error';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipes';
 
 const moderateEventBodySchema = z.object({
@@ -34,7 +36,9 @@ export class AdminEventController {
   @Get()
   @HttpCode(200)
   async index() {
-    return { events: await this.getAllEvents.execute() };
+    const events = await this.getAllEvents.execute(EventStatus.PENDING);
+
+    return { events, pendingCount: events.length };
   }
 
   @Patch(':eventId/status')
@@ -49,6 +53,10 @@ export class AdminEventController {
     });
 
     if (result.isLeft()) {
+      if (result.value instanceof EventAlreadyModeratedError) {
+        throw new ConflictException(result.value.message);
+      }
+
       throw new BadRequestException(result.value.message);
     }
 

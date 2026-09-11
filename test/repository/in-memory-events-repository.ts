@@ -10,6 +10,9 @@ export class InMemoryEventRepository implements EventRepository {
     }
     return event;
   }
+  async findByAuthorId(authorId: string): Promise<Event[]> {
+    return this.items.filter((item) => item.authorId === authorId);
+  }
   async findByAll(status?: EventStatus): Promise<Event[] | null> {
     const event = status
       ? this.items.filter((item) => item.status === status)

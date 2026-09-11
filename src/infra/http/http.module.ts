@@ -23,6 +23,7 @@ import { DeleteEventController } from './controllers/event-controllers/delete-ev
 import { DeleteEventUseCase } from '@/domain/aplication/use-cases/event/delete-events-use-case';
 import { GetEventController } from './controllers/event-controllers/get-event-controller';
 import { GetEventUseCase } from '@/domain/aplication/use-cases/event/get-event-use-case';
+import { GetMyEventsUseCase } from '@/domain/aplication/use-cases/event/get-my-events-use-case';
 import { AdminEventController } from './controllers/event-controllers/admin-event-controller';
 import { GetAllEventsUseCase } from '@/domain/aplication/use-cases/event/get-all-events-use-case';
 import { ModerateEventUseCase } from '@/domain/aplication/use-cases/event/moderate-event-use-case';
@@ -57,6 +58,7 @@ import { AdminGuard } from '@/infra/auth/admin.guard';
     CreateEventUseCase,
     DeleteEventUseCase,
     GetEventUseCase,
+    GetMyEventsUseCase,
     GetAllEventsUseCase,
     ModerateEventUseCase,
     AdminGuard,

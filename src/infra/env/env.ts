@@ -8,6 +8,7 @@ export const envSchema = z.object({
   AWS_SECRET_KET_ID: z.string(),
   HTTP_FILE_KEY: z.string(),
   AWS_BUCKET_NAME: z.string(),
+  S3_ENDPOINT: z.url().optional(),
   PORT: z.coerce.number().optional().default(3333),
 });
 export type Env = z.infer<typeof envSchema>;

@@ -8,20 +8,20 @@ import { EnvService } from '../env/env.service';
 import { Inject, Injectable } from '@nestjs/common';
 import { UploadRepository } from '@/domain/aplication/repositories/upload-repository';
 import { Upload } from '@/domain/enterprise/entities/upload';
+import { getStorageClientOptions } from './storage-client-options';
 
 @Injectable()
 export class R2Storage implements UploadRepository {
   private client: S3Client;
   constructor(@Inject(EnvService) private envService: EnvService) {
-    const accountId = envService.get('CLOUDFLARE_ACCOUNT_ID');
-    this.client = new S3Client({
-      endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-      region: 'auto',
-      credentials: {
+    this.client = new S3Client(
+      getStorageClientOptions({
+        accountId: envService.get('CLOUDFLARE_ACCOUNT_ID'),
         accessKeyId: envService.get('AWS_ACCESS_KEY_ID'),
         secretAccessKey: envService.get('AWS_SECRET_KET_ID'),
-      },
-    });
+        endpoint: envService.get('S3_ENDPOINT'),
+      }),
+    );
   }
   async upload({
     body,

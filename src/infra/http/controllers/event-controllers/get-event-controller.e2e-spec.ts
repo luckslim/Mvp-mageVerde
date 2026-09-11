@@ -45,5 +45,16 @@ describe('Create Event (E2E)', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.text).toBeTruthy();
+
+    const mineResponse = await request(app.getHttpServer())
+      .get('/get/events/mine')
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(mineResponse.statusCode).toBe(200);
+    expect(mineResponse.body.event).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ props: expect.objectContaining({ authorId: admin.id.toString() }) }),
+      ]),
+    );
   });
 });
